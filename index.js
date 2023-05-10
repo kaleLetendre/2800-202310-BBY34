@@ -95,26 +95,7 @@ app.get("/nosql-injection", async (req, res) => {
 });
 
 // DONT NEED
-app.get("/about", (req, res) => {
-  var color = req.query.color;
 
-  res.send("<h1 style='color:" + color + ";'>Patrick Guichon</h1>");
-});
-
-app.get("/contact", (req, res) => {
-  var missingEmail = req.query.missing;
-  var html = `
-        email address:
-        <form action='/submitEmail' method='post'>
-            <input name='email' type='text' placeholder='email'>
-            <button>Submit</button>
-        </form>
-    `;
-  if (missingEmail) {
-    html += "<br> email is required";
-  }
-  res.send(html);
-});
 
 app.post("/submitEmail", (req, res) => {
   var email = req.body.email;
@@ -161,6 +142,21 @@ app.post("/submitUser", async (req, res) => {
     res.redirect("/createUser");
     return;
   }
+  var dbRet = await userCollection
+  .find({ email: email })
+  .project({ email: 1});
+  if(dbRet != null){
+    
+	res.render("dupEmail");
+  } else {
+
+	dbRet = await userCollection
+  .find({ username: username })
+  .project({ username: 1});
+  if(dbRet != null){
+    res.render("dupUser");
+  }
+}
 
   var hashedPassword = await bcrypt.hash(password, saltRounds);
 
