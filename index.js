@@ -94,30 +94,7 @@ app.get("/nosql-injection", async (req, res) => {
   res.send(`<h1>Hello ${username}</h1>`);
 });
 
-// DONT NEED
-
-
-app.post("/submitEmail", (req, res) => {
-  var email = req.body.email;
-  if (!email) {
-    res.redirect("/contact?missing=1");
-  } else {
-    res.send("Thanks for subscribing with your email: " + email);
-  }
-});
-// DONT NEED
-
 app.get("/createUser", (req, res) => {
-  // var html = `
-  //   create user
-  //   <form action='/submitUser' method='post'>
-  //   <input name='email' type='email' placeholder='email'>
-	// <input name='username' type='text' placeholder='username'>
-  //   <input name='password' type='password' placeholder='password'>
-  //   <button>Submit</button>
-  //   </form>
-  //   `;
-  // res.send(html);
   res.render("createUser");
 });
 
@@ -169,10 +146,6 @@ app.post("/submitUser", async (req, res) => {
   req.session.email = email;
   req.session.authenticated = true;
   console.log("Inserted user");
-
-  var html =
-  //   "<h1>successfully created user</h1> <button onclick=window.location.href='/in'>Continue</button>";
-  // res.send(html);
   res.render("loggedIn");
 });
 
@@ -219,9 +192,6 @@ app.post("/loggingin", async (req, res) => {
 
 
 app.get("/incorrect", (req, res) => {
-	// res.send(`User not found
-	// <br>
-	// <button onclick=window.location.href='/login'>Retry</button><button onclick=window.location.href='/createUser'>New User</button>`)
 res.render("incorrect");
 })
 
@@ -230,14 +200,9 @@ app.get("/loggedin", async (req, res) => {
   if (!req.session.authenticated) {
     res.redirect("/login");
   }
-  //await sessionCollection.insertOne({ session: session });
+
   console.log("Inserted session");
 
-  // var html = 
-  //   You are logged in!
-  //   <button onclick=window.location.href='/in'>Continue</button>
-  //   ;
-  // res.send(html);
   if(req.session.user_type == "admin"){
     res.render("adminloggedin");
   }
@@ -247,15 +212,8 @@ app.get("/loggedin", async (req, res) => {
 });
 
 app.get("/logout", async (req, res) => {
-  //await sessionCollection.deleteOne({ session: session });
   console.log("removing session from db");
   req.session.destroy();
-  // var html = `
-  //   You are logged out.
-	// <br>
-	// <button onclick=window.location.href='/'>Home Page</button>
-  //   `;
-  // res.send(html);
   res.render("loggedOut");
 });
 
@@ -272,9 +230,6 @@ app.get("/in", async (req, res) => {
       .toArray();
     const username = result[0].username;
     res.render("in", {name: username})
-  //   res.send(`<h1>You're in! ${username}</h1> <br> <img src=/${randomImage()} style='width:250px;'>
-	// <br><br>
-	// <button onclick=window.location.href='/logout'>Log Out</button> `);
   }
 });
 
