@@ -1,6 +1,8 @@
 <%- include("templates/header") %>
 <main class="form-signin w-100 m-auto">
+  <div class="text-center">
   <form action="/loggingin" method="post" required>
+    
     <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
     <div class="form-floating">
@@ -31,6 +33,7 @@
   </form>
   <br> <br>
   <button onclick="window.location.href='/forgotPass'" type="button" class="btn btn-secondary btn-lg px-4 me-sm-3">Forgot Password?</button>
+</div>
 </div>
 </main>
   <%- include("templates/footer") %>

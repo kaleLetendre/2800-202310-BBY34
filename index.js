@@ -199,7 +199,6 @@ res.render("forgotPass");
 app.get("/getPass", async (req, res) => {
   var email = req.body.email;
 
-
 })
 
 app.get("/loggedin", async (req, res) => {
