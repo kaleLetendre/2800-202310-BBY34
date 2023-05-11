@@ -200,12 +200,9 @@ res.render("forgotPass");
 
 app.get("/getPass", async (req, res) => {
   var email = req.body.email;
-  var dbRet = await userCollection
-  .find({ email: email })
-  .project({ password: 1})
-  .toArray();
-})
 
+
+})
 
 app.get("/loggedin", async (req, res) => {
   if (!req.session.authenticated) {
