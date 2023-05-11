@@ -1,6 +1,6 @@
 require("./utils.js");
-
 require("dotenv").config();
+
 const express = require("express");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
@@ -10,8 +10,6 @@ const saltRounds = 12;
 const port = process.env.PORT || 3000;
 
 const app = express();
-
-
 
 const Joi = require("joi");
 
@@ -35,7 +33,8 @@ const userCollection = database.db(mongodb_database).collection("users");
 app.set('view engine', 'ejs');
 
 app.use(express.urlencoded({ extended: false }));
-console.log(`mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`);
+// console.log(`mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`);
+
 var mongoStore = MongoStore.create({
   mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
   crypto: {
@@ -46,12 +45,13 @@ var mongoStore = MongoStore.create({
 app.use(
   session({
     secret: node_session_secret,
-    store: mongoStore, //default is memory store
+    store: mongoStore,
     saveUninitialized: false,
     resave: true,
   })
 );
 
+/* Home */
 app.get("/", (req, res) => {
   
     res.render('home');
@@ -120,17 +120,16 @@ app.post("/submitUser", async (req, res) => {
     return;
   }
   var dbRet = await userCollection
-  .find({ email: email })
-  .project({ email: 1});
-  if(dbRet != null){
-    
-	res.render("dupEmail");
-  } else {
+    .find({ email: email })
+    .project({ email: 1});
 
-	dbRet = await userCollection
-  .find({ username: username })
-  .project({ username: 1});
-  if(dbRet != null){
+  if(dbRet != null) {   
+	  res.render("dupEmail");
+  } else {
+    dbRet = await userCollection
+      .find({ username: username })
+      .project({ username: 1});
+  if (dbRet != null) {
     res.render("dupUser");
   }
 }
@@ -143,9 +142,10 @@ app.post("/submitUser", async (req, res) => {
     password: hashedPassword,
     user_type: "basic"
   });
+
   req.session.email = email;
   req.session.authenticated = true;
-  console.log("Inserted user");
+  // console.log("Inserted user");
   res.render("loggedIn");
 });
 
@@ -192,8 +192,8 @@ app.post("/loggingin", async (req, res) => {
 
 
 app.get("/incorrect", (req, res) => {
-res.render("incorrect");
-})
+  res.render("incorrect");
+});
 
 
 app.get("/loggedin", async (req, res) => {
@@ -237,7 +237,7 @@ app.get("/admin", async (req, res) => {
   if (!req.session.authenticated) {
     console.log("You're not supposed to be here yet")
       res.redirect("/");
-    } else if(req.session.user_type != "admin"){
+    } else if (req.session.user_type != "admin"){
       res.redirect("/nope");
     }
   const dbRet = await userCollection.find().project({username: 1, _id: 1, user_type: 1}).toArray();
