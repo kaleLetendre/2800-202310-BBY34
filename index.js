@@ -15,7 +15,7 @@ const app = express();
 
 const Joi = require("joi");
 
-const expireTime = 60 * 60 * 1000; //expires after 1 day  (hours * minutes * seconds * millis)
+const expireTime =24 * 60 * 60 * 1000; //expires after 1 day  (hours * minutes * seconds * millis)
 
 /* secret information section */
 const mongodb_host = process.env.MONGODB_HOST;
@@ -30,7 +30,6 @@ const node_session_secret = process.env.NODE_SESSION_SECRET;
 var { database } = include("databaseConnection");
 
 const userCollection = database.db(mongodb_database).collection("users");
-//const sessionCollection = database.db(mongodb_database).collection("sessions");
 
 app.set('view engine', 'ejs');
 
@@ -163,8 +162,8 @@ app.post("/loggingin", async (req, res) => {
   }
 
   const result = await userCollection
-    .find({ email: email })
-    .project({ email: 1, password: 1, _id: 1, user_type: 1 })
+    .find({ username: username })
+    .project({ username: 1, password: 1, _id: 1, user_type: 1 })
     .toArray();
 
   console.log(result);
@@ -193,6 +192,18 @@ app.post("/loggingin", async (req, res) => {
 
 app.get("/incorrect", (req, res) => {
 res.render("incorrect");
+})
+
+app.get("/forgotPass", (req, res) => {
+res.render("forgotPass");
+})
+
+app.get("/getPass", async (req, res) => {
+  var email = req.body.email;
+  var dbRet = await userCollection
+  .find({ email: email })
+  .project({ password: 1})
+  .toArray();
 })
 
 
