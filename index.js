@@ -222,11 +222,11 @@ app.post("/submitTeam", async (req, res) => {
   await teamsCollection.insertOne({
     teamName: req.body.teamName,
     code: teamCode,
-    champ1: null,
-    champ2: null,
-    champ3: null,
-    champ4: null,
-    champ5: null
+    champ1: "this",
+    champ2: "is",
+    champ3: "a",
+    champ4: "test",
+    champ5: "!"
   });
   res.redirect(`/teamView?team=${teamCode}&name=${req.body.teamName}`)
 })
@@ -244,8 +244,18 @@ app.post("/joinTeam", async (req, res) => {
   }
 })
 
-app.get("/teamView", (req, res) => {
-  res.render("teamView", {teamCode: req.query.team, teamName: req.query.name})
+app.get("/teamView", async (req, res) => {
+  dbRet = await teamsCollection
+  .find({ code: req.query.team})
+  .project({}).toArray();
+
+  res.render("teamView", {teamCode: req.query.team, teamName: req.query.name,
+  champ1: dbRet[0].champ1,
+  champ2: dbRet[0].champ2,
+  champ3: dbRet[0].champ3,
+  champ4: dbRet[0].champ4,
+  champ5: dbRet[0].champ5,
+})
 })
 
 /**
