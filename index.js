@@ -28,6 +28,7 @@ const node_session_secret = process.env.NODE_SESSION_SECRET;
 var { database } = include("databaseConnection");
 
 const userCollection = database.db(mongodb_database).collection("users");
+const teamsCollection = database.db(mongodb_database).collection("teams");
 
 app.set('view engine', 'ejs');
 
@@ -56,43 +57,6 @@ app.get("/", (req, res) => {
     res.render('home');
 });
 
-// app.get("/nosql-injection", async (req, res) => {
-//   var username = req.query.user;
-
-//   if (!username) {
-//     res.send(
-//       `<h3>no user provided - try /nosql-injection?user=name</h3> <h3>or /nosql-injection?user[$ne]=name</h3>`
-//     );
-//     return;
-//   }
-//   console.log("user: " + username);
-
-//   const schema = Joi.string().max(20).required();
-//   const validationResult = schema.validate(username);
-
-//   //If we didn't use Joi to validate and check for a valid URL parameter below
-//   // we could run our userCollection.find and it would be possible to attack.
-//   // A URL parameter of user[$ne]=name would get executed as a MongoDB command
-//   // and may result in revealing information about all users or a successful
-//   // login without knowing the correct password.
-//   if (validationResult.error != null) {
-//     console.log(validationResult.error);
-//     res.send(
-//       "<h1 style='color:darkred;'>A NoSQL injection attack was detected!!</h1>"
-//     );
-//     return;
-//   }
-
-//   const result = await userCollection
-//     .find({ username: username })
-//     .project({ username: 1, password: 1, _id: 1 })
-//     .toArray();
-
-//   console.log(result);
-
-//   res.send(`<h1>Hello ${username}</h1>`);
-// });
-
 app.get("/createUser", (req, res) => {
   res.render("createUser");
 });
@@ -105,14 +69,16 @@ app.post("/submitUser", async (req, res) => {
   var email = req.body.email;
   var username = req.body.username;
   var password = req.body.password;
+  var sumname = req.body.sumname;
 
   const schema = Joi.object({
-    email: Joi.string().max(20).required(),
+    email: Joi.string().max(30).required(),
     username: Joi.string().max(20).required(),
     password: Joi.string().max(20).required(),
+    sumname: Joi.string().max(30).required(),
   });
 
-  const validationResult = schema.validate({ email, username, password });
+  const validationResult = schema.validate({ email, username, password, sumname });
   if (validationResult.error != null) {
     console.log(validationResult.error);
     res.redirect("/createUser");
@@ -242,6 +208,31 @@ app.get("/nope", (req, res) => {
   res.render("nope");
 })
 
+app.get("/findTeam", (req, res) => {
+  res.render("findTeam");
+})
+
+app.get("/createTeam", (req, res) => {
+  res.render("createTeam");
+})
+
+app.post("/submitTeam", async (req, res) => {
+  var roomCode = genCode(10);
+  await teamsCollection.insertOne({
+    teamName: req.body.teamName,
+    code: roomCode,
+  });
+  res.redirect("/in")
+})
+
+app.post("/joinTeam", async (req, res) => {
+  dbRet = await teamsCollection
+  .find({ code: req.body.teamCode})
+  .project({}).toArray();
+  console.log(dbRet[0].teamName);
+  res.redirect("/in");
+})
+
 /**
  * Project routes
  */
@@ -274,6 +265,20 @@ app.get("*", (req, res) => {
   res.status(404);
   res.render("404");
 });
+
+
+function genCode(length) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let code = '';
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    code += characters.charAt(randomIndex);
+  }
+
+  return code;
+}
+
 
 
 app.listen(port, () => {
