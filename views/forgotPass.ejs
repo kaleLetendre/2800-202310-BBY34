@@ -1,0 +1,15 @@
+<%- include("templates/header") %>
+<div class="text-center">
+<form action="/loggingin" method="post" required >
+    <h1 class="h3 mb-3 fw-normal">Please enter email</h1>
+
+    <div class="form-floating">
+      <input name="email" type="email" class="form-control" id="floatingInput" placeholder="Email" required>
+      <label for="floatingInput">Email</label>
+    </div>
+    <br>
+    <button class="btn btn-primary btn-lg px-4 me-sm-3" type="submit">Retrieve Password</button>
+    
+  </form>
+</div>
+  <%- include("templates/footer") %>
