@@ -233,17 +233,6 @@ app.get("/in", async (req, res) => {
   }
 });
 
-app.get("/admin", async (req, res) => {
-  if (!req.session.authenticated) {
-    console.log("You're not supposed to be here yet")
-      res.redirect("/");
-    } else if (req.session.user_type != "admin"){
-      res.redirect("/nope");
-    }
-  const dbRet = await userCollection.find().project({username: 1, _id: 1, user_type: 1}).toArray();
-  res.render("admin", {users: dbRet});
-})
-
 app.get("/nope", (req, res) => {
   res.status(403);
   res.render("nope");
@@ -258,16 +247,6 @@ function randomImage(){
 	// Return the image file name at the random index
 	return images[randomIndex];
 }
-
-app.get("/updateAdmin", async (req, res) => {
-  userCollection.updateOne({username: req.query.user}, {$set: {user_type: "admin"}});
-  res.redirect("/admin");
-})
-
-app.get("/updateBasic", async (req, res) => {
-  userCollection.updateOne({username: req.query.user}, {$set: {user_type: "basic"}});
-  res.redirect("/admin");
-})
 
 app.use(express.static(__dirname + "/public"));
 
