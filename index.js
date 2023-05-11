@@ -12,6 +12,7 @@ const port = process.env.PORT || 3000;
 const app = express();
 
 const Joi = require("joi");
+const { undefined } = require("webidl-conversions");
 
 const expireTime =24 * 60 * 60 * 1000; //expires after 1 day  (hours * minutes * seconds * millis)
 
@@ -229,8 +230,13 @@ app.post("/joinTeam", async (req, res) => {
   dbRet = await teamsCollection
   .find({ code: req.body.teamCode})
   .project({}).toArray();
-  console.log(dbRet[0].teamName);
-  res.redirect("/in");
+  if(dbRet[0] == null) {
+    res.render("cantFindTeam");
+  } 
+  else {
+    console.log(dbRet[0].teamName);
+    res.redirect("/in");
+  }
 })
 
 /**
