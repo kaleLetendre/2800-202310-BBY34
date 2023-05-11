@@ -218,12 +218,17 @@ app.get("/createTeam", (req, res) => {
 })
 
 app.post("/submitTeam", async (req, res) => {
-  var roomCode = genCode(10);
+  var teamCode = genCode(10);
   await teamsCollection.insertOne({
     teamName: req.body.teamName,
-    code: roomCode,
+    code: teamCode,
+    champ1: null,
+    champ2: null,
+    champ3: null,
+    champ4: null,
+    champ5: null
   });
-  res.redirect("/in")
+  res.redirect(`/teamView?team=${teamCode}&name=${req.body.teamName}`)
 })
 
 app.post("/joinTeam", async (req, res) => {
@@ -235,8 +240,12 @@ app.post("/joinTeam", async (req, res) => {
   } 
   else {
     console.log(dbRet[0].teamName);
-    res.redirect("/in");
+    res.redirect(`/teamView?team=${teamCode}&name=${dbRet[0].teamName}`);
   }
+})
+
+app.get("/teamView", (req, res) => {
+  res.render("teamView", {teamCode: req.query.team, teamName: req.query.name})
 })
 
 /**
