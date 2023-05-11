@@ -56,42 +56,42 @@ app.get("/", (req, res) => {
     res.render('home');
 });
 
-app.get("/nosql-injection", async (req, res) => {
-  var username = req.query.user;
+// app.get("/nosql-injection", async (req, res) => {
+//   var username = req.query.user;
 
-  if (!username) {
-    res.send(
-      `<h3>no user provided - try /nosql-injection?user=name</h3> <h3>or /nosql-injection?user[$ne]=name</h3>`
-    );
-    return;
-  }
-  console.log("user: " + username);
+//   if (!username) {
+//     res.send(
+//       `<h3>no user provided - try /nosql-injection?user=name</h3> <h3>or /nosql-injection?user[$ne]=name</h3>`
+//     );
+//     return;
+//   }
+//   console.log("user: " + username);
 
-  const schema = Joi.string().max(20).required();
-  const validationResult = schema.validate(username);
+//   const schema = Joi.string().max(20).required();
+//   const validationResult = schema.validate(username);
 
-  //If we didn't use Joi to validate and check for a valid URL parameter below
-  // we could run our userCollection.find and it would be possible to attack.
-  // A URL parameter of user[$ne]=name would get executed as a MongoDB command
-  // and may result in revealing information about all users or a successful
-  // login without knowing the correct password.
-  if (validationResult.error != null) {
-    console.log(validationResult.error);
-    res.send(
-      "<h1 style='color:darkred;'>A NoSQL injection attack was detected!!</h1>"
-    );
-    return;
-  }
+//   //If we didn't use Joi to validate and check for a valid URL parameter below
+//   // we could run our userCollection.find and it would be possible to attack.
+//   // A URL parameter of user[$ne]=name would get executed as a MongoDB command
+//   // and may result in revealing information about all users or a successful
+//   // login without knowing the correct password.
+//   if (validationResult.error != null) {
+//     console.log(validationResult.error);
+//     res.send(
+//       "<h1 style='color:darkred;'>A NoSQL injection attack was detected!!</h1>"
+//     );
+//     return;
+//   }
 
-  const result = await userCollection
-    .find({ username: username })
-    .project({ username: 1, password: 1, _id: 1 })
-    .toArray();
+//   const result = await userCollection
+//     .find({ username: username })
+//     .project({ username: 1, password: 1, _id: 1 })
+//     .toArray();
 
-  console.log(result);
+//   console.log(result);
 
-  res.send(`<h1>Hello ${username}</h1>`);
-});
+//   res.send(`<h1>Hello ${username}</h1>`);
+// });
 
 app.get("/createUser", (req, res) => {
   res.render("createUser");
@@ -149,12 +149,12 @@ app.post("/submitUser", async (req, res) => {
 });
 
 app.post("/loggingin", async (req, res) => {
-  var email = req.body.email;
+  var username = req.body.username;
   var password = req.body.password;
   console.log(req.session);
 
   const schema = Joi.string().max(20).required();
-  const validationResult = schema.validate(email);
+  const validationResult = schema.validate(username);
   if (validationResult.error != null) {
     console.log(validationResult.error);
     res.redirect("/login");
@@ -163,7 +163,7 @@ app.post("/loggingin", async (req, res) => {
 
   const result = await userCollection
     .find({ username: username })
-    .project({ username: 1, password: 1, _id: 1, user_type: 1 })
+    .project({ username: 1, password: 1, _id: 1, user_type: 1, email: 1 })
     .toArray();
 
   console.log(result);
@@ -175,10 +175,8 @@ app.post("/loggingin", async (req, res) => {
   if (await bcrypt.compare(password, result[0].password)) {
     console.log("correct password");
     req.session.authenticated = true;
-    req.session.email = email;
-    req.session.user_type = result[0].user_type;
-    console.log(req.session.user_type);
     req.session.cookie.maxAge = expireTime;
+    req.session.email = result[0].email;
 
     res.redirect("/loggedIn");
     return;
@@ -211,10 +209,9 @@ app.get("/loggedin", async (req, res) => {
 
   console.log("Inserted session");
 
-  if(req.session.user_type == "admin"){
+  if (req.session.user_type == "admin"){
     res.render("adminloggedin");
-  }
-  else {
+  } else {
     res.render("loggedIn");
   }
 });
@@ -246,15 +243,31 @@ app.get("/nope", (req, res) => {
   res.render("nope");
 })
 
-function randomImage(){
-	const images = ['HappyOtter.jpg', 'AngryOtter.jpg', 'dog.jpg'];
+/**
+ * Project routes
+ */
+app.get('/profile', async (req,res) => {
+  // session check 
+  if (!req.session.authenticated) {
+    res.redirect("/");
+  } else {
+      // make request db for personal info
+    const result = await userCollection
+    .find({ email: req.session.email })
+    .project({ email: 1, password: 1, username: 1, summonerName: 1 })
+    .toArray();
+    // populate profile page
 
-	// Generate a random number between 0 and 2
-	const randomIndex = Math.floor(Math.random() * 3);
-  
-	// Return the image file name at the random index
-	return images[randomIndex];
-}
+    // render
+    res.render('profile', {
+      username: result[0].username,
+      password: result[0].password,
+      email: result[0].email,
+      summonerName: result[0].summonerName
+    });
+  }
+});
+
 
 app.use(express.static(__dirname + "/public"));
 

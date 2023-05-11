@@ -1,14 +1,28 @@
 <%- include("templates/header") %>
-<div class="text-center">
-<form action="/loggingin" method="post" required >
+<main class="form-signin w-100 m-auto">
+  <form action="/loggingin" method="post" required>
     <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
     <div class="form-floating">
-      <input name="username" type="text" class="form-control" id="floatingInput" placeholder="Username" required>
+      <input
+        name="username"
+        type="text"
+        class="form-control"
+        id="floatingInput"
+        placeholder="Username"
+        required
+      />
       <label for="floatingInput">Username</label>
     </div>
     <div class="form-floating">
-      <input name="password" type="password" class="form-control" id="floatingPassword" placeholder="Password" required>
+      <input
+        name="password"
+        type="password"
+        class="form-control"
+        id="floatingPassword"
+        placeholder="Password"
+        required
+      />
       <label for="floatingPassword">Password</label>
     </div>
     <br>
@@ -18,5 +32,6 @@
   <br> <br>
   <button onclick="window.location.href='/forgotPass'" type="button" class="btn btn-secondary btn-lg px-4 me-sm-3">Forgot Password?</button>
 </div>
+</main>
   <%- include("templates/footer") %>
   
