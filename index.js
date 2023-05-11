@@ -13,6 +13,7 @@ const app = express();
 
 const Joi = require("joi");
 const { undefined } = require("webidl-conversions");
+const { render } = require("ejs");
 
 const expireTime =24 * 60 * 60 * 1000; //expires after 1 day  (hours * minutes * seconds * millis)
 
@@ -144,6 +145,7 @@ app.post("/loggingin", async (req, res) => {
     req.session.authenticated = true;
     req.session.cookie.maxAge = expireTime;
     req.session.email = result[0].email;
+    req.session.username = result[0].username;
 
     res.redirect("/loggedIn");
     return;
@@ -240,22 +242,39 @@ app.post("/joinTeam", async (req, res) => {
   } 
   else {
     console.log(dbRet[0].teamName);
-    res.redirect(`/teamView?team=${teamCode}&name=${dbRet[0].teamName}`);
+    res.redirect(`/teamView?team=${req.body.teamCode}&name=${dbRet[0].teamName}`);
   }
 })
 
+app.get("/linkJoin", (req, res) => {
+  res.render("linkJoin", {friend: req.query.friend, teamName: req.query.name, teamCode: req.query.teamCode})
+})
+
+app.get("/guestJoin", async (req, res) => {
+  dbRet = await teamsCollection
+  .find({ code: req.query.teamCode})
+  .project({}).toArray();
+  req.session.authenticated = true;
+  req.session.username = "Poro " + genCode(3);
+  console.log(req.session.username);
+  res.redirect(`/teamView?team=${req.query.teamCode}&name=${dbRet[0].teamName}`)
+})
+
 app.get("/teamView", async (req, res) => {
+  if(!req.session.authenticated){
+    res.redirect("nope");
+  } else{
   dbRet = await teamsCollection
   .find({ code: req.query.team})
   .project({}).toArray();
 
-  res.render("teamView", {teamCode: req.query.team, teamName: req.query.name,
+  res.render("teamView", {teamCode: req.query.team, teamName: req.query.name, username: req.session.username,
   champ1: dbRet[0].champ1,
   champ2: dbRet[0].champ2,
   champ3: dbRet[0].champ3,
   champ4: dbRet[0].champ4,
   champ5: dbRet[0].champ5,
-})
+})}
 })
 
 /**
