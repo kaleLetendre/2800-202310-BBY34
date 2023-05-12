@@ -114,6 +114,7 @@ app.post("/submitUser", async (req, res) => {
     email: email,
     username: username,
     password: hashedPassword,
+    summonerName: sumname,
     user_type: "basic"
   });
 
