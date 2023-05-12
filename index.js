@@ -122,7 +122,7 @@ app.post("/submitUser", async (req, res) => {
   req.session.guest = false;
   // console.log("Inserted user");
   if(req.session.teamCode == 0){
-    res.redirect("/loggedIn");}
+    res.redirect("/in");}
     else {res.redirect(`/teamView?team=${req.session.teamCode}`)}
     return;
 });
