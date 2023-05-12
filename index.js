@@ -160,7 +160,7 @@ app.post("/loggingin", async (req, res) => {
     req.session.guest = false;
     teamCode = req.session.teamCode;
     if(teamCode == 0)
-    res.redirect("/loggedIn");
+    res.redirect("/in");
     else res.redirect(`/teamView?team=${teamCode}`)
     return;
   } else {
