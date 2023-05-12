@@ -13,6 +13,8 @@ const port = process.env.PORT || 3000;
 const app = express();
 
 const Joi = require("joi");
+const { undefined } = require("webidl-conversions");
+const { render } = require("ejs");
 
 const expireTime =24 * 60 * 60 * 1000; //expires after 1 day  (hours * minutes * seconds * millis)
 
@@ -54,7 +56,8 @@ app.use(
 );
 
 /* Home */
-app.get("/", (req, res) => { 
+app.get("/", (req, res) => {
+    req.session.teamCode = 0;
     res.render('home');
 });
 
@@ -63,7 +66,10 @@ app.get("/createUser", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  res.render('login');
+  var code = req.query.teamCode
+  if(code != null)
+  res.render('login', {teamCode: req.query.teamCode});
+  else res.render('login', {teamCode: 0});
 });
 
 app.post("/submitUser", async (req, res) => {
@@ -79,24 +85,24 @@ app.post("/submitUser", async (req, res) => {
     sumname: Joi.string().max(30).required(),
   });
 
+  
+  var dbRet = await userCollection.findOne({ email: email }, { projection: { email: 1 } });
+
+  if(dbRet != null) {   
+	  res.render("dupEmail");
+    return;
+  } else {
+    dbRet = await userCollection.findOne({ username: username }, { projection: { username: 1 } });
+  if (dbRet != null) {
+    res.render("dupUser");
+    return;
+  }
+
   const validationResult = schema.validate({ email, username, password, sumname });
   if (validationResult.error != null) {
     console.log(validationResult.error);
     res.redirect("/createUser");
     return;
-  }
-  var dbRet = await userCollection
-    .find({ email: email })
-    .project({ email: 1});
-
-  if(dbRet != null) {   
-	  res.render("dupEmail");
-  } else {
-    dbRet = await userCollection
-      .find({ username: username })
-      .project({ username: 1});
-  if (dbRet != null) {
-    res.render("dupUser");
   }
 }
 
@@ -111,8 +117,12 @@ app.post("/submitUser", async (req, res) => {
 
   req.session.email = email;
   req.session.authenticated = true;
+  req.session.guest = false;
   // console.log("Inserted user");
-  res.render("loggedIn");
+  if(req.session.teamCode == 0){
+    res.redirect("/loggedIn");}
+    else {res.redirect(`/teamView?team=${req.session.teamCode}`)}
+    return;
 });
 
 app.post("/loggingin", async (req, res) => {
@@ -144,8 +154,12 @@ app.post("/loggingin", async (req, res) => {
     req.session.authenticated = true;
     req.session.cookie.maxAge = expireTime;
     req.session.email = result[0].email;
-
+    req.session.username = result[0].username;
+    req.session.guest = false;
+    teamCode = req.session.teamCode;
+    if(teamCode == 0)
     res.redirect("/loggedIn");
+    else res.redirect(`/teamView?team=${teamCode}`)
     return;
   } else {
     console.log("incorrect password");
@@ -259,7 +273,7 @@ app.post('/resettingPassword', async (req,res) => {
 })
 
 app.get("/loggedin", async (req, res) => {
-  if (!req.session.authenticated) {
+  if (!req.session.authenticated || req.session.guest) {
     res.redirect("/login");
   }
 
@@ -280,7 +294,7 @@ app.get("/logout", async (req, res) => {
 
 //fix this
 app.get("/in", async (req, res) => {
-  if (!req.session.authenticated) {
+  if (!req.session.authenticated || req.session.guest) {
 	console.log("You're not supposed to be here yet")
     res.redirect("/");
   } else {
@@ -308,20 +322,62 @@ app.get("/createTeam", (req, res) => {
 })
 
 app.post("/submitTeam", async (req, res) => {
-  var roomCode = genCode(10);
+  var teamCode = genCode(10);
+  req.session.teamCode = teamCode;
   await teamsCollection.insertOne({
     teamName: req.body.teamName,
-    code: roomCode,
+    code: teamCode,
+    champ1: "this",
+    champ2: "is",
+    champ3: "a",
+    champ4: "test",
+    champ5: "!"
   });
-  res.redirect("/in")
+  res.redirect(`/teamView?team=${teamCode}&name=${req.body.teamName}`)
 })
 
 app.post("/joinTeam", async (req, res) => {
   dbRet = await teamsCollection
   .find({ code: req.body.teamCode})
   .project({}).toArray();
-  console.log(dbRet[0].teamName);
-  res.redirect("/in");
+  if(dbRet[0] == null) {
+    res.render("cantFindTeam");
+  } 
+  else {
+    console.log(dbRet[0].teamName);
+    req.session.teamCode = req.body.teamCode
+    res.redirect(`/teamView?&name=${dbRet[0].teamName}`);
+  }
+})
+
+app.get("/linkJoin", (req, res) => {
+  req.session.teamCode = req.query.teamCode;
+  res.render("linkJoin", {friend: req.query.friend, teamName: req.query.name, teamCode: req.query.teamCode})
+})
+
+app.get("/guestJoin",(req, res) => {
+  req.session.authenticated = true;
+  req.session.username = "Poro " + genCode(3);
+  req.session.guest = true;
+  console.log(req.session.username);
+  res.redirect(`/teamView?team=${req.session.teamName}`)
+})
+
+app.get("/teamView", async (req, res) => {
+  if(!req.session.authenticated || req.session.teamCode == 0){
+    res.redirect("nope");
+  } else{
+  dbRet = await teamsCollection
+  .find({ code: req.session.teamCode})
+  .project({}).toArray();
+
+  res.render("teamView", {teamCode: req.session.teamCode, teamName: dbRet[0].teamName, username: req.session.username,
+  champ1: dbRet[0].champ1,
+  champ2: dbRet[0].champ2,
+  champ3: dbRet[0].champ3,
+  champ4: dbRet[0].champ4,
+  champ5: dbRet[0].champ5,
+})}
 })
 
 /**
@@ -329,8 +385,8 @@ app.post("/joinTeam", async (req, res) => {
  */
 app.get('/profile', async (req,res) => {
   // session check 
-  if (!req.session.authenticated) {
-    res.redirect("/");
+  if (!req.session.authenticated || req.session.guest) {
+    res.redirect("/nope");
   } else {
       // make request db for personal info
     const result = await userCollection
