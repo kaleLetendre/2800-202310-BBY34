@@ -374,7 +374,7 @@ app.get("/teamView", async (req, res) => {
   .find({ code: req.session.teamCode})
   .project({}).toArray();
 
-  res.render("teamView", {teamCode: req.session.teamCode, teamName: dbRet[0].teamName, username: req.session.username,
+  res.render("teamView", {teamCode: req.session.teamCode, teamName: dbRet[0].teamName, username: req.session.username, url: process.env.URL,
   champ1: dbRet[0].champ1,
   champ2: dbRet[0].champ2,
   champ3: dbRet[0].champ3,
@@ -429,7 +429,7 @@ app.use(express.static(__dirname + "/public"));
 app.get("*", (req, res) => {
   res.status(404);
   res.render("message", {
-    title: `Error 404S!`,
+    title: `Error 404!`,
     message: `You may have typed something in wrong, just follow the buttons and you'll do fine.`,
     route: '/'
   });
