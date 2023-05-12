@@ -1,9 +1,9 @@
 {
   "name": "synerift",
   "version": "0.1.0",
-  "private": true,
+  "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "node index.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
