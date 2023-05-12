@@ -275,19 +275,19 @@ app.post('/resettingPassword', async (req,res) => {
   }
 })
 
-app.get("/loggedin", async (req, res) => {
-  if (!req.session.authenticated || req.session.guest) {
-    res.redirect("/login");
-  }
+// app.get("/loggedin", async (req, res) => {
+//   if (!req.session.authenticated || req.session.guest) {
+//     res.redirect("/login");
+//   }
 
-  console.log("Inserted session");
+//   console.log("Inserted session");
 
-  if (req.session.user_type == "admin"){
-    res.render("adminloggedin");
-  } else {
-    res.render("loggedIn");
-  }
-});
+//   if (req.session.user_type == "admin"){
+//     res.render("adminloggedin");
+//   } else {
+//     res.render("loggedIn");
+//   }
+// });
 
 app.get("/logout", async (req, res) => {
   console.log("removing session from db");
