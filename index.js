@@ -162,9 +162,25 @@ app.get("/forgotPass", (req, res) => {
   res.render("forgotPass");
 })
 
+/* Sends email with token to Password Reset */
 app.post("/getPass", async (req, res) => {
   var email = req.body.email;
-  // TODO: validate email, check if exists
+  // validate email, check if exists
+  const schema = Joi.string().email().required();
+  const validationResult = schema.validate(email);
+
+  if (validationResult.error != null) {
+    res.redirect("/invalid-email-error");
+    return;
+  }
+
+  const result = await userCollection.find({email: email}).project({email: 1}).toArray();
+
+  if (result.length != 1) {
+    res.redirect("/email-not-found");
+    return;
+  }
+
   // store token in db
   var token = genCode(10);
   await passResetCollection.insertOne({
@@ -199,29 +215,47 @@ app.post("/getPass", async (req, res) => {
   res.render('recoverPass');
 })
 
+/* Reset Password page */
 app.get('/reset-password', async (req, res) => {
   const token = req.query.token;
   const isValid = req.query.isValid;
-  const resetRequest = await passResetCollection.findOne({ token });
+  const resetRequest = await passResetCollection.find({token: token}).project({token: 1, email: 1}).toArray();
 
-  if (!resetRequest) {
-    res.status(400).send('Invalid password reset token');
+  
+  if (resetRequest.length !== 1) {
+    res.render('message', {title: 'Token has expired', message: 'Sorry, password reset token has expired. Please try again.', route: '/'});
     return;
   }
 
-  res.render('resetPassword', {token: token, isValid: isValid});
+  res.render('resetPassword', {token: token, email: resetRequest[0].email, isValid: isValid});
 });
 
+/* handles resetting password */
 app.post('/resettingPassword', async (req,res) => {
   // check if password same
-  const { token, password, confirmPassword } = req.body;
-
+  const { token, email, password, confirmPassword } = req.body;
+  
   if (password !== confirmPassword) {
     return res.redirect(`/reset-password?token=${token}&isValid=false`);
   }
-  // if same get old account email
+
+  var hashedPassword = await bcrypt.hash(password, saltRounds);
+
+  const result = await userCollection.updateOne({email: email}, {$set: {
+    password: hashedPassword
+  }});
+
+  // remove token
+  const tokenResult = await passResetCollection.deleteOne({token: token});
+
   // update
-  console.log("resetting password ran")
+  if (result.modifiedCount === 1) {
+    // success
+    res.redirect('/password-reset-success');
+  } else {
+    // failure
+    res.redirect('/password-reset-failure');
+  }
 })
 
 app.get("/loggedin", async (req, res) => {
@@ -315,12 +349,31 @@ app.get('/profile', async (req,res) => {
   }
 });
 
+app.get("/email-not-found", (req,res) => {
+  res.render("message", {title: 'Email Not Found', message: "Sorry the inputted email can\'t be found. Please try again.", route: "/forgotPass"})
+});
+
+app.get("/invalid-email-error", (req,res)=> {
+  res.render("message", {title: `Email Invalid`, message: "Improper email. Please try again.", route: "/forgotPass"});
+});
+
+app.get("/password-reset-success", (req,res) => {
+  res.render("message", {title: 'Password Reset Sucessfully', message: "Password has successfully reset. You can now use your new password to log in.", route: "/"});
+});
+
+app.get("/password-reset-failure", (req,res) => {
+  res.render("message", {title: 'Password Reset Unsucessfully', message: "Password has not been reset. Please contact us for more details.", route: "/"});
+});
 
 app.use(express.static(__dirname + "/public"));
 
 app.get("*", (req, res) => {
   res.status(404);
-  res.render("404");
+  res.render("message", {
+    title: `Error 404S!`,
+    message: `You may have typed something in wrong, just follow the buttons and you'll do fine.`,
+    route: '/'
+  });
 });
 
 /**
@@ -354,8 +407,6 @@ Thank you for choosing our service.
 Sincerely,
 
 SyneRift Team`}
-
-
 
 app.listen(port, () => {
   console.log("Node application listening on port " + port);
