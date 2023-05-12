@@ -33,6 +33,8 @@ var { database } = include("databaseConnection");
 const userCollection = database.db(mongodb_database).collection("users");
 const teamsCollection = database.db(mongodb_database).collection("teams");
 const passResetCollection = database.db(mongodb_database).collection('passwordResetRequests');
+passResetCollection.createIndex({ createdAt: 1 }, { expireAfterSeconds: 86400 })
+
 
 app.set('view engine', 'ejs');
 
@@ -200,6 +202,7 @@ app.post("/getPass", async (req, res) => {
   await passResetCollection.insertOne({
     token: token,
     email: email,
+    createdAt: new Date()
   });
 
   // take email and send recovery email
