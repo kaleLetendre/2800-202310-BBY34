@@ -1,6 +1,7 @@
 require("./utils.js");
 require("dotenv").config();
 
+const nodemailer = require('nodemailer');
 const express = require("express");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
@@ -29,6 +30,7 @@ var { database } = include("databaseConnection");
 
 const userCollection = database.db(mongodb_database).collection("users");
 const teamsCollection = database.db(mongodb_database).collection("teams");
+const passResetCollection = database.db(mongodb_database).collection('passwordResetRequests');
 
 app.set('view engine', 'ejs');
 
@@ -52,8 +54,7 @@ app.use(
 );
 
 /* Home */
-app.get("/", (req, res) => {
-  
+app.get("/", (req, res) => { 
     res.render('home');
 });
 
@@ -153,18 +154,74 @@ app.post("/loggingin", async (req, res) => {
   }
 });
 
-
 app.get("/incorrect", (req, res) => {
   res.render("incorrect");
 });
 
 app.get("/forgotPass", (req, res) => {
-res.render("forgotPass");
+  res.render("forgotPass");
 })
 
-app.get("/getPass", async (req, res) => {
+app.post("/getPass", async (req, res) => {
   var email = req.body.email;
+  // TODO: validate email, check if exists
+  // store token in db
+  var token = genCode(10);
+  await passResetCollection.insertOne({
+    token: token,
+    email: email,
+  });
 
+  // take email and send recovery email
+  var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.EMAIL_PASSWORD
+    }
+  });
+  
+  var mailOptions = {
+    from: process.env.EMAIL,
+    to: email,
+    subject: 'SyneRift Password Recovery Request',
+    text: emailRecoveryText(token)
+  };
+  
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
+
+  res.render('recoverPass');
+})
+
+app.get('/reset-password', async (req, res) => {
+  const token = req.query.token;
+  const isValid = req.query.isValid;
+  const resetRequest = await passResetCollection.findOne({ token });
+
+  if (!resetRequest) {
+    res.status(400).send('Invalid password reset token');
+    return;
+  }
+
+  res.render('resetPassword', {token: token, isValid: isValid});
+});
+
+app.post('/resettingPassword', async (req,res) => {
+  // check if password same
+  const { token, password, confirmPassword } = req.body;
+
+  if (password !== confirmPassword) {
+    return res.redirect(`/reset-password?token=${token}&isValid=false`);
+  }
+  // if same get old account email
+  // update
+  console.log("resetting password ran")
 })
 
 app.get("/loggedin", async (req, res) => {
@@ -266,7 +323,9 @@ app.get("*", (req, res) => {
   res.render("404");
 });
 
-
+/**
+ * Helper Functions
+ */
 function genCode(length) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let code = '';
@@ -278,6 +337,23 @@ function genCode(length) {
 
   return code;
 }
+
+const emailRecoveryText = (token) => {
+return `Hello,
+
+We received a request to recover your account password. If you did not make this request, please ignore this email.
+
+To reset your password, please follow the link below:
+
+${process.env.URL}/reset-password?token=${token}
+
+If you are unable to click on the link above, please copy and paste it into your web browser's address bar.
+
+Thank you for choosing our service.
+
+Sincerely,
+
+SyneRift Team`}
 
 
 
