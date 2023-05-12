@@ -112,6 +112,7 @@ app.post("/submitUser", async (req, res) => {
 
   req.session.email = email;
   req.session.authenticated = true;
+  req.session.guest = false;
   // console.log("Inserted user");
   res.render("loggedIn");
 });
@@ -146,6 +147,7 @@ app.post("/loggingin", async (req, res) => {
     req.session.cookie.maxAge = expireTime;
     req.session.email = result[0].email;
     req.session.username = result[0].username;
+    req.session.guest = false;
 
     res.redirect("/loggedIn");
     return;
@@ -171,7 +173,7 @@ app.get("/getPass", async (req, res) => {
 })
 
 app.get("/loggedin", async (req, res) => {
-  if (!req.session.authenticated) {
+  if (!req.session.authenticated || req.session.guest) {
     res.redirect("/login");
   }
 
@@ -192,7 +194,7 @@ app.get("/logout", async (req, res) => {
 
 //fix this
 app.get("/in", async (req, res) => {
-  if (!req.session.authenticated) {
+  if (!req.session.authenticated || req.session.guest) {
 	console.log("You're not supposed to be here yet")
     res.redirect("/");
   } else {
@@ -256,6 +258,7 @@ app.get("/guestJoin", async (req, res) => {
   .project({}).toArray();
   req.session.authenticated = true;
   req.session.username = "Poro " + genCode(3);
+  req.session.guest = true;
   console.log(req.session.username);
   res.redirect(`/teamView?team=${req.query.teamCode}&name=${dbRet[0].teamName}`)
 })
@@ -282,8 +285,8 @@ app.get("/teamView", async (req, res) => {
  */
 app.get('/profile', async (req,res) => {
   // session check 
-  if (!req.session.authenticated) {
-    res.redirect("/");
+  if (!req.session.authenticated || req.session.guest) {
+    res.redirect("/nope");
   } else {
       // make request db for personal info
     const result = await userCollection
