@@ -57,6 +57,8 @@ app.use(
   })
 );
 
+var logo = "logo.jpg";
+
 /* Home */
 app.get("/", (req, res) => {
     req.session.teamCode = 0;
@@ -308,7 +310,7 @@ app.get("/in", async (req, res) => {
       .project({ username: 1 })
       .toArray();
     const username = result[0].username;
-    res.render("in", {name: username})
+    res.render("in", {name: username, image: logo})
   }
 });
 
@@ -427,6 +429,17 @@ app.get("/password-reset-failure", (req,res) => {
 
 app.use(express.static(__dirname + "/public"));
 
+//easter egg
+var counter = 0;
+app.get("/eggCount", (req, res) => {
+  counter++;
+  if (counter > 4){
+    logo = "poro.jpg";
+    counter = 0;
+  }
+  res.redirect("/in");
+})
+
 app.get("*", (req, res) => {
   res.status(404);
   res.render("message", {
@@ -467,6 +480,8 @@ Thank you for choosing our service.
 Sincerely,
 
 SyneRift Team`}
+
+
 
 app.listen(port, () => {
   console.log("Node application listening on port " + port);
