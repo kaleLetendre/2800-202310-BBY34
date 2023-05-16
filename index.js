@@ -386,6 +386,10 @@ var champ2 = dbRet[0].champ2;
 var champ3 = dbRet[0].champ3;
 var champ4 = dbRet[0].champ4;
 var champ5 = dbRet[0].champ5;
+target = req.query.tar;
+if(target == null) {
+  taregt = 0;
+}
 
   res.render("teamView", {
     teamCode: req.session.teamCode,
@@ -405,9 +409,17 @@ var champ5 = dbRet[0].champ5;
 
     champ5: champ5,
     img5: await champImage(champ5),
+
+    target: target
   });
-  
+
 }})
+
+app.post("modChamp", async (req, res) => {
+  input = req.body.champName;
+  await teamsCollection.updateOne({teamCode: req.session.teamCode}).$set({[req.query.target]: input})
+
+})
 
 /**
  * Project routes
