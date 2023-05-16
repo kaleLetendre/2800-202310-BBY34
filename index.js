@@ -2,7 +2,8 @@ require("./utils.js");
 require("dotenv").config();
 
 const axios = require('axios');
-const fetch = require('node-fetch');
+const fetch = require('isomorphic-fetch');
+
 const nodemailer = require('nodemailer');
 const express = require("express");
 const session = require("express-session");
@@ -372,6 +373,7 @@ app.get("/guestJoin",(req, res) => {
 })
 
 app.get("/teamView", async (req, res) => {
+  const champs = champData();
   if(!req.session.authenticated || req.session.teamCode == 0){
     res.redirect("nope");
   } else{
@@ -379,15 +381,33 @@ app.get("/teamView", async (req, res) => {
   dbRet = await teamsCollection
   .find({ code: req.session.teamCode})
   .project({}).toArray();
+var champ1 = dbRet[0].champ1;
+var champ2 = dbRet[0].champ2;
+var champ3 = dbRet[0].champ3;
+var champ4 = dbRet[0].champ4;
+var champ5 = dbRet[0].champ5;
 
-  res.render("teamView", {teamCode: req.session.teamCode, teamName: dbRet[0].teamName, username: req.session.username, url: process.env.URL,
-  champ1: dbRet[0].champ1,
-  champ2: dbRet[0].champ2,
-  champ3: dbRet[0].champ3,
-  champ4: dbRet[0].champ4,
-  champ5: dbRet[0].champ5,
-})}
-})
+  res.render("teamView", {
+    teamCode: req.session.teamCode,
+    teamName: dbRet[0].teamName,
+    username: req.session.username,
+    url: process.env.URL,
+    champ1: champ1,
+    img1: await champImage(champ1),
+    champ2: champ2,
+    img2: await champImage(champ2),
+
+    champ3: champ3,
+    img3: await champImage(champ3),
+
+    champ4: champ4,
+    img4: await champImage(champ4),
+
+    champ5: champ5,
+    img5: await champImage(champ5),
+  });
+  
+}})
 
 /**
  * Project routes
@@ -466,9 +486,44 @@ function genCode(length) {
     const randomIndex = Math.floor(Math.random() * characters.length);
     code += characters.charAt(randomIndex);
   }
-
+  console.log(code);
   return code;
 }
+
+async function champData() {
+  try {
+    const response = await axios.get('http://ddragon.leagueoflegends.com/cdn/12.6.1/data/en_US/champion.json');
+    const champions = response.data.data;
+    const champs = {};
+
+    if (champions) {
+      for (const champion in champions) {
+        const { name } = champions[champion];
+        const imageUrl = `http://ddragon.leagueoflegends.com/cdn/13.9.1/img/champion/${champion}.png`;
+
+        champs[champion] = {
+          name,
+          image: imageUrl
+        };
+      }
+    } else {
+      throw new Error('Champion data not found');
+    }
+
+    console.log(champs[0]);
+    return champs;
+  } catch (error) {
+    console.error('Error fetching champions:', error);
+  }
+}
+
+
+async function champImage(champion){
+  console.log("getting " + champion);
+  const response = await axios.get('http://ddragon.leagueoflegends.com/cdn/12.6.1/data/en_US/champion.json');
+  return `http://ddragon.leagueoflegends.com/cdn/13.9.1/img/champion/${champion}.png`
+}
+
 
 const emailRecoveryText = (token) => {
 return `Hello,
