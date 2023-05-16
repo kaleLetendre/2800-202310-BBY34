@@ -373,6 +373,7 @@ app.get("/teamView", async (req, res) => {
   if(!req.session.authenticated || req.session.teamCode == 0){
     res.redirect("nope");
   } else{
+    console.log(req.session.username);
   dbRet = await teamsCollection
   .find({ code: req.session.teamCode})
   .project({}).toArray();
@@ -436,6 +437,9 @@ app.get("/eggCount", (req, res) => {
   if (counter > 4){
     logo = "poro.jpg";
     counter = 0;
+  }
+  else {
+    logo="logo.jpg"
   }
   res.redirect("/in");
 })
