@@ -1,6 +1,8 @@
 require("./utils.js");
 require("dotenv").config();
 
+const axios = require('axios');
+const fetch = require('node-fetch');
 const nodemailer = require('nodemailer');
 const express = require("express");
 const session = require("express-session");
