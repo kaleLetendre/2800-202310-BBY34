@@ -417,8 +417,8 @@ if(target == null) {
 
 app.post("modChamp", async (req, res) => {
   input = req.body.champName;
-  await teamsCollection.updateOne({teamCode: req.session.teamCode}).$set({[req.query.target]: input})
-
+  await teamsCollection.updateOne({teamCode: req.session.teamCode}).$set({[req.query.target]: input});
+  res.redirect("/teamView");
 })
 
 /**
