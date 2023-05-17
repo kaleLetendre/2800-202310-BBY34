@@ -1,4 +1,6 @@
-<form action="/modify?target=<%-player%>" method="post" required>
+<%- include("templates/header") %>
+
+<form action="/update?tar=<%-target%>" method="post" required>
     <div class="form-floating">
       <input
         name="champName"
@@ -8,7 +10,9 @@
         placeholder="Champion Name"
         required
       />
-      <label for="floatingInput">Username</label>
+      <label for="floatingInput">Champion Name</label>
       <button class="btn btn-primary btn-lg px-4 me-sm-3" type="submit">Enter</button>
     </div>
 </form>
+
+<%- include("templates/footer") %>

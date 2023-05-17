@@ -336,11 +336,26 @@ app.post("/submitTeam", async (req, res) => {
   await teamsCollection.insertOne({
     teamName: req.body.teamName,
     code: teamCode,
-    champ1: "this",
-    champ2: "is",
-    champ3: "a",
-    champ4: "test",
-    champ5: "!"
+    champ1: "blank",
+    champ2: "blank",
+    champ3: "blank",
+    champ4: "blank",
+    champ5: "blank",
+    enemy1: "blank",
+    enemy2: "blank",
+    enemy3: "blank",
+    enemy4: "blank",
+    enemy5: "blank",
+    ban1: "blank",
+    ban2: "blank",
+    ban3: "blank",
+    ban4: "blank",
+    ban5: "blank",
+    ban6: "blank",
+    ban7: "blank",
+    ban8: "blank",
+    ban9: "blank",
+    ban10: "blank",
   });
   res.redirect(`/teamView?team=${teamCode}&name=${req.body.teamName}`)
 })
@@ -386,10 +401,6 @@ var champ2 = dbRet[0].champ2;
 var champ3 = dbRet[0].champ3;
 var champ4 = dbRet[0].champ4;
 var champ5 = dbRet[0].champ5;
-target = req.query.tar;
-if(target == null) {
-  taregt = 0;
-}
 
   res.render("teamView", {
     teamCode: req.session.teamCode,
@@ -409,16 +420,22 @@ if(target == null) {
 
     champ5: champ5,
     img5: await champImage(champ5),
-
-    target: target
   });
 
 }})
 
-app.post("modChamp", async (req, res) => {
+app.post("/update", async (req, res) => {
   input = req.body.champName;
-  await teamsCollection.updateOne({teamCode: req.session.teamCode}).$set({[req.query.target]: input});
+  await teamsCollection.updateOne(
+    { code: req.session.teamCode },
+    { $set: { [req.query.tar]: input } }
+  );
+  
   res.redirect("/teamView");
+})
+
+app.get("/mod", (req,res) =>{
+res.render("mod", {target: req.query.tar});
 })
 
 /**
