@@ -1,0 +1,16 @@
+.frame-box {
+  width: 100%;
+  height: 30vw;
+  background-image: url("/challenger-border.png");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+
+
+.content-box {
+  /* Style your content here */
+  padding: 20px;
+  background-color: blue;
+} */
