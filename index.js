@@ -356,6 +356,12 @@ app.post("/submitTeam", async (req, res) => {
     ban8: "blank",
     ban9: "blank",
     ban10: "blank",
+    player1: req.session.username,
+    player2: null,
+    player3: null,
+    player4: null,
+    player5: null,
+    numPlayers: 1
   });
   res.redirect(`/teamView?team=${teamCode}&name=${req.body.teamName}`)
 })
@@ -401,6 +407,21 @@ var champ2 = dbRet[0].champ2;
 var champ3 = dbRet[0].champ3;
 var champ4 = dbRet[0].champ4;
 var champ5 = dbRet[0].champ5;
+var enemy1 = dbRet[0].enemy1;
+var enemy2 = dbRet[0].enemy2;
+var enemy3 = dbRet[0].enemy3;
+var enemy4 = dbRet[0].enemy4;
+var enemy5 = dbRet[0].enemy5;
+var ban1 = dbRet[0].ban1;
+var ban2 = dbRet[0].ban2;
+var ban3 = dbRet[0].ban3;
+var ban4 = dbRet[0].ban4;
+var ban5 = dbRet[0].ban5;
+var ban6 = dbRet[0].ban6;
+var ban7 = dbRet[0].ban7;
+var ban8 = dbRet[0].ban8;
+var ban9 = dbRet[0].ban9;
+var ban10 = dbRet[0].ban10;
 
   res.render("teamView", {
     teamCode: req.session.teamCode,
@@ -409,6 +430,7 @@ var champ5 = dbRet[0].champ5;
     url: process.env.URL,
     champ1: champ1,
     img1: await champImage(champ1),
+
     champ2: champ2,
     img2: await champImage(champ2),
 
@@ -420,6 +442,51 @@ var champ5 = dbRet[0].champ5;
 
     champ5: champ5,
     img5: await champImage(champ5),
+
+    enemy1: enemy1,
+    enimg1: await champImage(enemy1),
+    
+    enemy2: enemy2,
+    enimg2: await champImage(enemy2),
+
+    enemy3: enemy3,
+    enimg3: await champImage(enemy3),
+
+    enemy4: enemy4,
+    enimg4: await champImage(enemy4),
+
+    enemy5: enemy5,
+    enimg5: await champImage(enemy5),
+
+    ban1: ban1,
+    banimg1: await champImage(ban1),
+
+    ban2: ban2,
+    banimg2: await champImage(ban2),
+
+    ban3: ban3,
+    banimg3: await champImage(ban3),
+
+    ban4: ban4,
+    banimg4: await champImage(ban4),
+
+    ban5: ban5,
+    banimg5: await champImage(ban5),
+
+    ban6: ban6,
+    banimg6: await champImage(ban6),
+    
+    ban7: ban7,
+    banimg7: await champImage(ban8),
+
+    ban8: ban8,
+    banimg8: await champImage(ban8),
+
+    ban9: ban9,
+    banimg9: await champImage(ban9),
+
+    ban10: ban10,
+    banimg10: await champImage(ban10),
   });
 
 }})
