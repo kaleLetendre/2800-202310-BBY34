@@ -1,17 +1,20 @@
 <%- include('templates/header') %>
-<main>
-  <div class="container">
-    <%- include('templates/frameBox') %>
-    <%- include('templates/teamInfo') %>
+<main class="room">
+  <div class="container room">
+    <div class="overlay"></div>
+    <%- include('templates/teamInfo')%>
     <div class="room-cards">
       <% for (i = 0; i < 5; i++) { %>
       <div class="row m-0 p-0">
-        <%- include('templates/teammateCard', {role: roles[i], summonerName: summonerNames[i]}) %>
-        <%- include('templates/opponentCard') %>
+        <%- include('templates/teammateCard', {role: roles[i], summonerName: summonerNames[i], imgURL: 'img/Aatrox_0.jpg' }) %>
+        <%- include('templates/opponentCard', {imgURL: 'img/Aatrox_0.jpg'}) %>
       </div>
+      <% if (i !== 4) { %>
+      <hr>
+      <% } %>
       <% } %>
     </div>
-    <div class="team-compositions"></div>
+    <%- include('templates/teamComp') %>
   </div>
 </main>
 <%- include('templates/footer') %>

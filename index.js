@@ -372,7 +372,10 @@ app.get("/teamView", async (req, res) => {
   const roles = ['Top', 'Jungle', 'Mid', 'Bot', 'Support'];
   const summonerNames = ['AAAAAAAA', 'BBBBBBB','CCCCCC','DDDDDDD', 'EEEEEEE']
   // 
-  
+  const myFunction = () => {
+    console.log('hi');
+  }
+
   if(!req.session.authenticated || req.session.teamCode == 0){
     res.redirect("nope");
   } else{
@@ -387,7 +390,8 @@ app.get("/teamView", async (req, res) => {
   champ4: dbRet[0].champ4,
   champ5: dbRet[0].champ5,
   roles: roles,
-  summonerNames: summonerNames
+  summonerNames: summonerNames,
+  myFunction: myFunction
 })}
 })
 
