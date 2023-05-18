@@ -1,6 +1,8 @@
 require("./utils.js");
 require("dotenv").config();
 
+const axios = require('axios');
+const fetch = require('node-fetch');
 const nodemailer = require('nodemailer');
 const express = require("express");
 const session = require("express-session");
@@ -56,6 +58,8 @@ app.use(
     resave: true,
   })
 );
+
+var logo = "logo.jpg";
 
 /* Home */
 app.get("/", (req, res) => {
@@ -308,7 +312,7 @@ app.get("/in", async (req, res) => {
       .project({ username: 1 })
       .toArray();
     const username = result[0].username;
-    res.render("in", {name: username})
+    res.render("in", {name: username, image: logo})
   }
 });
 
@@ -379,6 +383,7 @@ app.get("/teamView", async (req, res) => {
   if(!req.session.authenticated || req.session.teamCode == 0){
     res.redirect("nope");
   } else{
+    console.log(req.session.username);
   dbRet = await teamsCollection
   .find({ code: req.session.teamCode})
   .project({}).toArray();
@@ -438,6 +443,20 @@ app.get("/password-reset-failure", (req,res) => {
 
 app.use(express.static(__dirname + "/public"));
 
+//easter egg
+var counter = 0;
+app.get("/eggCount", (req, res) => {
+  counter++;
+  if (counter > 4){
+    logo = "poro.jpg";
+    counter = 0;
+  }
+  else {
+    logo="logo.jpg"
+  }
+  res.redirect("/in");
+})
+
 app.get("*", (req, res) => {
   res.status(404);
   res.render("message", {
@@ -478,6 +497,8 @@ Thank you for choosing our service.
 Sincerely,
 
 SyneRift Team`}
+
+
 
 app.listen(port, () => {
   console.log("Node application listening on port " + port);
