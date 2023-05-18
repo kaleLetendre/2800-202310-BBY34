@@ -2,7 +2,7 @@ require("./utils.js");
 require("dotenv").config();
 
 const axios = require('axios');
-const fetch = require('node-fetch');
+// const fetch = require('node-fetch');
 const nodemailer = require('nodemailer');
 const express = require("express");
 const session = require("express-session");
@@ -372,6 +372,14 @@ app.get("/guestJoin",(req, res) => {
 })
 
 app.get("/teamView", async (req, res) => {
+  // temp
+  const roles = ['Top', 'Jungle', 'Mid', 'Bot', 'Support'];
+  const summonerNames = ['AAAAAAAA', 'BBBBBBB','CCCCCC','DDDDDDD', 'EEEEEEE']
+  // 
+  const myFunction = () => {
+    console.log('hi');
+  }
+
   if(!req.session.authenticated || req.session.teamCode == 0){
     res.redirect("nope");
   } else{
@@ -386,6 +394,9 @@ app.get("/teamView", async (req, res) => {
   champ3: dbRet[0].champ3,
   champ4: dbRet[0].champ4,
   champ5: dbRet[0].champ5,
+  roles: roles,
+  summonerNames: summonerNames,
+  myFunction: myFunction
 })}
 })
 
