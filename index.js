@@ -117,7 +117,10 @@ app.post("/submitUser", async (req, res) => {
     username: username,
     password: hashedPassword,
     summonerName: sumname,
-    user_type: "basic"
+    user_type: "basic",
+    pick1: blank,
+    pick2: blank,
+    pick3: blank
   });
 
   req.session.email = email;
@@ -321,6 +324,16 @@ app.get("/nope", (req, res) => {
   res.render("nope");
 })
 
+app.get("/pick", async (req, res) => {
+  const dbRet = await userCollection.find({username: req.session.username}).project({}).toArray();
+  var picks = {
+    pick1: dbRet[0].pick1,
+    pick2: dbRet[0].pick2,
+    pick3: dbRet[0].pick3
+  }
+  
+})
+
 app.get("/findTeam", (req, res) => {
   res.render("findTeam");
 })
@@ -422,6 +435,7 @@ app.post("/joinTeam", async (req, res) => {
 
 
 app.get("/linkJoin", (req, res) => {
+  req.session.username = null;
   req.session.teamCode = req.query.teamCode;
   res.render("linkJoin", { friend: req.query.friend, teamName: req.query.name })
 })
@@ -438,7 +452,7 @@ app.get("/teamView", async (req, res) => {
   const roles = ['Top', 'Jungle', 'Mid', 'Bot', 'Support'];
 
   const champs = champData();
-  if(!req.session.authenticated || req.session.teamCode == 0){
+  if(!req.session.authenticated || req.session.teamCode == null){
     res.redirect("/nope");
   } else{
     console.log(req.session.username);
@@ -573,6 +587,10 @@ var summonerNames = [dbRet[0].player1, dbRet[0].player2, dbRet[0].player3, dbRet
 
 app.post("/update", async (req, res) => {
   input = req.body.champName;
+  if(input == null){
+    res.redirect("/teamView");
+    return;
+  }
   console.log(input);
   await teamsCollection.updateOne(
     { code: req.session.teamCode },
