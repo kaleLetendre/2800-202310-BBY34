@@ -1,6 +1,9 @@
 require("./utils.js");
 require("dotenv").config();
 
+const axios = require('axios');
+const fetch = require('isomorphic-fetch');
+
 const nodemailer = require('nodemailer');
 const express = require("express");
 const session = require("express-session");
@@ -56,6 +59,8 @@ app.use(
     resave: true,
   })
 );
+
+var logo = "logo.jpg";
 
 /* Home */
 app.get("/", (req, res) => {
@@ -308,7 +313,7 @@ app.get("/in", async (req, res) => {
       .project({ username: 1 })
       .toArray();
     const username = result[0].username;
-    res.render("in", {name: username})
+    res.render("in", {name: username, image: logo})
   }
 });
 
@@ -331,28 +336,68 @@ app.post("/submitTeam", async (req, res) => {
   await teamsCollection.insertOne({
     teamName: req.body.teamName,
     code: teamCode,
-    champ1: "this",
-    champ2: "is",
-    champ3: "a",
-    champ4: "test",
-    champ5: "!"
+    champ1: "blank",
+    champ2: "blank",
+    champ3: "blank",
+    champ4: "blank",
+    champ5: "blank",
+    enemy1: "blank",
+    enemy2: "blank",
+    enemy3: "blank",
+    enemy4: "blank",
+    enemy5: "blank",
+    ban1: "blank",
+    ban2: "blank",
+    ban3: "blank",
+    ban4: "blank",
+    ban5: "blank",
+    ban6: "blank",
+    ban7: "blank",
+    ban8: "blank",
+    ban9: "blank",
+    ban10: "blank",
+    player1: req.session.username,
+    player2: null,
+    player3: null,
+    player4: null,
+    player5: null,
+    numPlayers: 1
   });
   res.redirect(`/teamView?team=${teamCode}&name=${req.body.teamName}`)
 })
 
 app.post("/joinTeam", async (req, res) => {
+  var teamCode = req.body.teamCode;
   dbRet = await teamsCollection
-  .find({ code: req.body.teamCode})
-  .project({}).toArray();
-  if(dbRet[0] == null) {
+    .find({ code: teamCode })
+    .project({})
+    .toArray();
+  
+  if (dbRet[0] == null) {
     res.render("cantFindTeam");
-  } 
-  else {
-    console.log(dbRet[0].teamName);
-    req.session.teamCode = req.body.teamCode
+  } else {
+    req.session.teamCode = teamCode;
+    if(dbRet[0].numPlayers + 1 < 6){
+    var spot = "player" + (dbRet[0].numPlayers + 1);
+    console.log(spot);
+    
+    await teamsCollection.updateOne(
+      { code: teamCode },
+      {
+        $set: {
+          [spot]: req.session.username,
+          numPlayers: dbRet[0].numPlayers + 1
+        }
+      }
+    );
+    
     res.redirect(`/teamView?&name=${dbRet[0].teamName}`);
-  }
-})
+  } else {
+    //this needs to be it's own error page
+    res.render("cantFindTeam");
+  }}
+});
+
 
 app.get("/linkJoin", (req, res) => {
   req.session.teamCode = req.query.teamCode;
@@ -368,20 +413,123 @@ app.get("/guestJoin",(req, res) => {
 })
 
 app.get("/teamView", async (req, res) => {
+  // temp
+  const roles = ['Top', 'Jungle', 'Mid', 'Bot', 'Support'];
+  const summonerNames = ['AAAAAAAA', 'BBBBBBB','CCCCCC','DDDDDDD', 'EEEEEEE']
+  // 
+  const myFunction = () => {
+    console.log('hi');
+  }
+
+  const champs = champData();
   if(!req.session.authenticated || req.session.teamCode == 0){
     res.redirect("nope");
   } else{
+    //console.log(req.session.username);
   dbRet = await teamsCollection
   .find({ code: req.session.teamCode})
   .project({}).toArray();
+var champ1 = dbRet[0].champ1;
+var champ2 = dbRet[0].champ2;
+var champ3 = dbRet[0].champ3;
+var champ4 = dbRet[0].champ4;
+var champ5 = dbRet[0].champ5;
+var enemy1 = dbRet[0].enemy1;
+var enemy2 = dbRet[0].enemy2;
+var enemy3 = dbRet[0].enemy3;
+var enemy4 = dbRet[0].enemy4;
+var enemy5 = dbRet[0].enemy5;
+var ban1 = dbRet[0].ban1;
+var ban2 = dbRet[0].ban2;
+var ban3 = dbRet[0].ban3;
+var ban4 = dbRet[0].ban4;
+var ban5 = dbRet[0].ban5;
+var ban6 = dbRet[0].ban6;
+var ban7 = dbRet[0].ban7;
+var ban8 = dbRet[0].ban8;
+var ban9 = dbRet[0].ban9;
+var ban10 = dbRet[0].ban10;
 
-  res.render("teamView", {teamCode: req.session.teamCode, teamName: dbRet[0].teamName, username: req.session.username, url: process.env.URL,
-  champ1: dbRet[0].champ1,
-  champ2: dbRet[0].champ2,
-  champ3: dbRet[0].champ3,
-  champ4: dbRet[0].champ4,
-  champ5: dbRet[0].champ5,
-})}
+  res.render("teamView", {
+    teamCode: req.session.teamCode,
+    teamName: dbRet[0].teamName,
+    username: req.session.username,
+    url: process.env.URL,
+    champ1: champ1,
+    img1: await champImage(champ1),
+
+    champ2: champ2,
+    img2: await champImage(champ2),
+
+    champ3: champ3,
+    img3: await champImage(champ3),
+
+    champ4: champ4,
+    img4: await champImage(champ4),
+
+    champ5: champ5,
+    img5: await champImage(champ5),
+
+    enemy1: enemy1,
+    enimg1: await champImage(enemy1),
+    
+    enemy2: enemy2,
+    enimg2: await champImage(enemy2),
+
+    enemy3: enemy3,
+    enimg3: await champImage(enemy3),
+
+    enemy4: enemy4,
+    enimg4: await champImage(enemy4),
+
+    enemy5: enemy5,
+    enimg5: await champImage(enemy5),
+
+    ban1: ban1,
+    banimg1: await champImage(ban1),
+
+    ban2: ban2,
+    banimg2: await champImage(ban2),
+
+    ban3: ban3,
+    banimg3: await champImage(ban3),
+
+    ban4: ban4,
+    banimg4: await champImage(ban4),
+
+    ban5: ban5,
+    banimg5: await champImage(ban5),
+
+    ban6: ban6,
+    banimg6: await champImage(ban6),
+    
+    ban7: ban7,
+    banimg7: await champImage(ban8),
+
+    ban8: ban8,
+    banimg8: await champImage(ban8),
+
+    ban9: ban9,
+    banimg9: await champImage(ban9),
+
+    ban10: ban10,
+    banimg10: await champImage(ban10),
+  });
+
+}})
+
+app.post("/update", async (req, res) => {
+  input = req.body.champName;
+  await teamsCollection.updateOne(
+    { code: req.session.teamCode },
+    { $set: { [req.query.tar]: input } }
+  );
+  
+  res.redirect("/teamView");
+})
+
+app.get("/mod", (req,res) =>{
+res.render("mod", {target: req.query.tar});
 })
 
 /**
@@ -427,6 +575,20 @@ app.get("/password-reset-failure", (req,res) => {
 
 app.use(express.static(__dirname + "/public"));
 
+//easter egg
+var counter = 0;
+app.get("/eggCount", (req, res) => {
+  counter++;
+  if (counter > 4){
+    logo = "poro.jpg";
+    counter = 0;
+  }
+  else {
+    logo="logo.jpg"
+  }
+  res.redirect("/in");
+})
+
 app.get("*", (req, res) => {
   res.status(404);
   res.render("message", {
@@ -447,9 +609,44 @@ function genCode(length) {
     const randomIndex = Math.floor(Math.random() * characters.length);
     code += characters.charAt(randomIndex);
   }
-
+  console.log(code);
   return code;
 }
+
+async function champData() {
+  try {
+    const response = await axios.get('http://ddragon.leagueoflegends.com/cdn/12.6.1/data/en_US/champion.json');
+    const champions = response.data.data;
+    const champs = {};
+
+    if (champions) {
+      for (const champion in champions) {
+        const { name } = champions[champion];
+        const imageUrl = `http://ddragon.leagueoflegends.com/cdn/13.9.1/img/champion/${champion}.png`;
+
+        champs[champion] = {
+          name,
+          image: imageUrl
+        };
+      }
+    } else {
+      throw new Error('Champion data not found');
+    }
+
+    //console.log(champs[0]);
+    return champs;
+  } catch (error) {
+    console.error('Error fetching champions:', error);
+  }
+}
+
+
+async function champImage(champion){
+  //console.log("getting " + champion);
+  const response = await axios.get('http://ddragon.leagueoflegends.com/cdn/12.6.1/data/en_US/champion.json');
+  return `http://ddragon.leagueoflegends.com/cdn/13.9.1/img/champion/${champion}.png`
+}
+
 
 const emailRecoveryText = (token) => {
 return `Hello,
@@ -467,6 +664,8 @@ Thank you for choosing our service.
 Sincerely,
 
 SyneRift Team`}
+
+
 
 app.listen(port, () => {
   console.log("Node application listening on port " + port);

@@ -1,0 +1,201 @@
+:root {
+  --gold1: #F0E6D2;
+  --gold2: #C89B3C;
+  --gold3: #32281E;
+  --blue1: #0A323C;
+  --blue2: #091428;
+  --black: #010A13;
+  --grey: #1E282D;
+  /* Overrides */
+  --primary: var(--gold1);
+  --bs-heading-color: var(--gold1);
+  --bs-emphasis-color: var(--gold1);
+  --bs-secondary-color: var(--gold2);
+  /* bs nav */
+  --bs-link-color: var(--gold1);
+  --bs-link-hover-color: var(--gold2);
+}
+
+@font-face {
+  font-family: 'BeaufortForLoL';
+  src: url('../fonts/BeaufortforLOL-Regular.otf') format('opentype'),
+  url('../fonts/BeaufortforLOL-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Spiegel';
+  src: url('../fonts/Spiegel-Regular.otf') format('opentype'),
+  url('../fonts/Spiegel_TT_Regular.ttf') format('truetype');
+}
+
+html {
+  background-color: var(--blue2);
+}
+
+body {
+  font-family: 'Spiegel', Arial, sans-serif;
+  /* background-color: var(--blue2); */
+  background-image: url("/img/summoners_rift_platform.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  /* filter: brightness(0.7); */
+}
+
+h1, p, span {
+  margin: 0;
+  color: var(--gold1);
+}
+
+p {
+  margin: 0;
+}
+
+hr {
+  height: 2px;
+  width: 50%;
+  /* background-color: var(--gold2); */
+  background-image: linear-gradient(to right, var(--gold1), var(--gold2));
+}
+
+.container.team-info {
+  display: flex;
+}
+
+.container.room {
+  position: relative;
+  background-image: url("/img/summoners_rift_platform.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: radial-gradient(rgba(10,50,60,0.8), rgba(10,20,40,1.0));
+}
+
+.content {
+  position: absolute;
+  z-index: 2;
+}
+
+/* .frame-box {
+  width: 100%;
+  height: 30vw;
+  background-image: url("/challenger-border.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+} */
+
+.room-cards {
+  color: var(--gold2);
+  margin-bottom: 10px;
+}
+
+.team-info {
+  color: var(--gold1);
+  justify-content: center;
+}
+
+.rounded-circle {
+  border: 3px solid var(--gold2);
+  /* margin: 7%; */
+  width: 90%;
+  height: 90%;
+}
+
+.rounded-circle:hover {
+  border: 2px solid var(--gold1);
+}
+
+.button {
+  border: 2px solid var(--gold2);
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  color: var(--gold2);
+  background-color: var(--grey);
+}
+
+.btn-primary {
+  color: var(--gold1);
+  background-color: var(--blue1);
+  border-color: var(--gold1);
+  --bs-btn-active-color: var(--gold2);
+  --bs-btn-active-bg: var(--blue2);
+  --bs-btn-active-border-color: var(--gold2);
+}
+
+.btn-primary:hover {
+  color: var(--gold2);
+  background-color: var(--blue1);
+  border-color: var(--gold2);
+}
+
+#copyButton {
+  background-color: transparent;
+  border: none;
+}
+
+#copyButton img {
+  height: 20px;
+  width: 20px;
+  padding-left: 5px;
+}
+
+#copyButton:active img {
+  height: 18px;
+  width: 18px;
+}
+
+.inline {
+  display: flex;
+  align-items: center;
+}
+
+.team-info-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.image-container:focus {
+  background-color: red;
+}
+
+.image-container {
+  position: relative;
+}
+
+/* .border-2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  fill-opacity: 0;
+  border: 2px solid var(--gold2);
+  max-width: 90%;
+  max-height: 90;
+} */
+
+.team-comp-row {
+  width: 100%;
+}
+
+.list-group-item img {
+  width: 100%;
+}
+
+/* Header */
+.nav-link {
+
+}
