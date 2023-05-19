@@ -14,9 +14,18 @@
       <% } %>
       <% } %>
     </div>
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+      <button type="button" id="bansButton" class="btn btn-secondary active">Bans
+      </button>
+      <button class="btn btn-secondary" id="teamsButton">
+        Teams
+      </button>
+    </div>
     <%- include('templates/bans', {
       bans: bans
     }) %>
+    <!-- temp -->
+    <%- include('templates/teams') %>
     <%- include('mod', {target: ''}) %>
   </div>
 </main>
@@ -27,4 +36,23 @@
     const form = document.getElementById('champion-input-form');
     form.action = "/update?tar=" + event.target.parentNode.getAttribute('data-id');
   }
+
+  // Get the buttons
+  const bansButton = document.getElementById('bansButton');
+  const teamsButton = document.getElementById('teamsButton');
+
+  // Get the collapse elements
+  const bansCollapse = document.getElementById('bans');
+  const teamsCollapse = document.getElementById('teams');
+
+  // Add event listeners to the buttons
+  bansButton.addEventListener('click', function() {
+    bansCollapse.classList.toggle('show');
+    teamsCollapse.classList.toggle('show');
+  });
+
+  teamsButton.addEventListener('click', function() {
+    teamsCollapse.classList.toggle('show');
+    bansCollapse.classList.toggle('show');
+  });
 </script>
