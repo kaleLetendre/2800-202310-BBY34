@@ -415,7 +415,7 @@ app.get("/guestJoin", (req, res) => {
   req.session.username = "Poro " + genCode(3);
   req.session.guest = true;
   console.log(req.session.username);
-  res.redirect(`/joinTeam`)
+  res.post(`/joinTeam`)
 })
 
 app.get("/teamView", async (req, res) => {
