@@ -368,41 +368,56 @@ app.post("/joinTeam", async (req, res) => {
   if (req.session.teamCode == null) {
     req.session.teamCode = req.body.teamCode;
   }
+  if (req.session.username == null) {
+    req.session.authenticated = true;
+    req.session.username = "Poro " + genCode(3);
+    req.session.guest = true;
+    console.log(req.session.username);
+  }
   dbRet = await teamsCollection
     .find({ code: req.session.teamCode })
     .project({})
     .toArray();
 
+  // Check if there was a result found
   if (dbRet[0] == null) {
     res.render("cantFindTeam");
-  } else {
-    //check if the player is already in the team
-    if ((req.session.username == dbRet[0].player1 || req.session.username == dbRet[0].player2 ||
-      req.session.username == dbRet[0].player3 || req.session.username == dbRet[0].player4 || req.session.username == dbRet[0].player5)) {
-      res.redirect("/teamView");
-    }
-    //check if there is room
-    if (dbRet[0].numPlayers + 1 < 6) {
-      var spot = "player" + (dbRet[0].numPlayers + 1);
-      console.log(spot);
+    return; // Return after rendering the view to avoid further execution
+  }
 
-      await teamsCollection.updateOne(
-        { code: req.session.teamCode },
-        {
-          $set: {
-            [spot]: req.session.username,
-            numPlayers: dbRet[0].numPlayers + 1
-          }
+  // Check if the player is already in the team
+  if (
+    dbRet[0].player1 === req.session.username ||
+    dbRet[0].player2 === req.session.username ||
+    dbRet[0].player3 === req.session.username ||
+    dbRet[0].player4 === req.session.username ||
+    dbRet[0].player5 === req.session.username
+  ) {
+    res.redirect("/teamView");
+    return; // Return after redirecting to avoid further execution
+  }
+
+  // Check if there is room in the team
+  if (dbRet[0].numPlayers + 1 < 6) {
+    var spot = "player" + (dbRet[0].numPlayers + 1);
+    console.log(spot);
+
+    await teamsCollection.updateOne(
+      { code: req.session.teamCode },
+      {
+        $set: {
+          [spot]: req.session.username,
+          numPlayers: dbRet[0].numPlayers + 1
         }
-      );
-      res.redirect(`/teamView`);
-    }
-    else {
-      //TODO: this needs it's own error page, too many players
-      res.render("cantFindTeam");
-    }
+      }
+    );
+    res.redirect("/teamView");
+  } else {
+    //this doesn't exist yet
+    res.render("tooManyPlayers");
   }
 });
+
 
 
 app.get("/linkJoin", (req, res) => {
@@ -415,7 +430,6 @@ app.get("/guestJoin", (req, res) => {
   req.session.username = "Poro " + genCode(3);
   req.session.guest = true;
   console.log(req.session.username);
-  res.post(`/joinTeam`)
 })
 
 app.get("/teamView", async (req, res) => {
