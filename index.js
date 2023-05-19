@@ -397,10 +397,19 @@ app.get("/teamView", async (req, res) => {
   // temp
   const roles = ['Top', 'Jungle', 'Mid', 'Bot', 'Support'];
   const summonerNames = ['AAAAAAAA', 'BBBBBBB','CCCCCC','DDDDDDD', 'EEEEEEE']
-  // 
-  const myFunction = () => {
-    console.log('hi');
-  }
+  /* helper function */
+  // const formatData = (arr) => {
+  //   var teamChamps = [];
+  //   var enemyChamps = [];
+  //   var bans = [];
+
+  //   for (i = 0; i < 5; i++) {
+
+  //   }
+  // }
+
+
+  /* end function */
 
   const champs = champData();
   if(!req.session.authenticated || req.session.teamCode == 0){
@@ -410,6 +419,10 @@ app.get("/teamView", async (req, res) => {
   dbRet = await teamsCollection
   .find({ code: req.session.teamCode})
   .project({}).toArray();
+  // test print ***
+  console.log(dbRet);
+
+  /* to format */
 var champ1 = dbRet[0].champ1;
 var champ2 = dbRet[0].champ2;
 var champ3 = dbRet[0].champ3;
@@ -431,70 +444,104 @@ var ban8 = dbRet[0].ban8;
 var ban9 = dbRet[0].ban9;
 var ban10 = dbRet[0].ban10;
 
-  res.render("teamView", {
+var teamChamps = [
+  [champ1, champImage(champ1)],
+  [champ2, champImage(champ2)],
+  [champ3, champImage(champ3)],
+  [champ4, champImage(champ4)],
+  [champ5, champImage(champ5)],
+];
+var enemyChamps = [
+  [enemy1, champImage(enemy1)],
+  [enemy2, champImage(enemy2)],
+  [enemy3, champImage(enemy3)],
+  [enemy4, champImage(enemy4)],
+  [enemy5, champImage(enemy5)],
+]
+var bans = [
+  [ban1, champImage(ban1)],
+  [ban2, champImage(ban2)],
+  [ban3, champImage(ban3)],
+  [ban4, champImage(ban4)],
+  [ban5, champImage(ban5)],
+  [ban6, champImage(ban6)],
+  [ban7, champImage(ban7)],
+  [ban8, champImage(ban8)],
+  [ban9, champImage(ban9)],
+  [ban10, champImage(ban10)],
+
+]
+/* end formatting*/
+
+  res.render("teamView2", {
     teamCode: req.session.teamCode,
     teamName: dbRet[0].teamName,
     username: req.session.username,
     url: process.env.URL,
-    champ1: champ1,
-    img1: await champImage(champ1),
+    // champ1: champ1,
+    // img1: await champImage(champ1),
 
-    champ2: champ2,
-    img2: await champImage(champ2),
+    // champ2: champ2,
+    // img2: await champImage(champ2),
 
-    champ3: champ3,
-    img3: await champImage(champ3),
+    // champ3: champ3,
+    // img3: await champImage(champ3),
 
-    champ4: champ4,
-    img4: await champImage(champ4),
+    // champ4: champ4,
+    // img4: await champImage(champ4),
 
-    champ5: champ5,
-    img5: await champImage(champ5),
+    // champ5: champ5,
+    // img5: await champImage(champ5),
 
-    enemy1: enemy1,
-    enimg1: await champImage(enemy1),
+    // enemy1: enemy1,
+    // enimg1: await champImage(enemy1),
     
-    enemy2: enemy2,
-    enimg2: await champImage(enemy2),
+    // enemy2: enemy2,
+    // enimg2: await champImage(enemy2),
 
-    enemy3: enemy3,
-    enimg3: await champImage(enemy3),
+    // enemy3: enemy3,
+    // enimg3: await champImage(enemy3),
 
-    enemy4: enemy4,
-    enimg4: await champImage(enemy4),
+    // enemy4: enemy4,
+    // enimg4: await champImage(enemy4),
 
-    enemy5: enemy5,
-    enimg5: await champImage(enemy5),
+    // enemy5: enemy5,
+    // enimg5: await champImage(enemy5),
 
-    ban1: ban1,
-    banimg1: await champImage(ban1),
+    // ban1: ban1,
+    // banimg1: await champImage(ban1),
 
-    ban2: ban2,
-    banimg2: await champImage(ban2),
+    // ban2: ban2,
+    // banimg2: await champImage(ban2),
 
-    ban3: ban3,
-    banimg3: await champImage(ban3),
+    // ban3: ban3,
+    // banimg3: await champImage(ban3),
 
-    ban4: ban4,
-    banimg4: await champImage(ban4),
+    // ban4: ban4,
+    // banimg4: await champImage(ban4),
 
-    ban5: ban5,
-    banimg5: await champImage(ban5),
+    // ban5: ban5,
+    // banimg5: await champImage(ban5),
 
-    ban6: ban6,
-    banimg6: await champImage(ban6),
+    // ban6: ban6,
+    // banimg6: await champImage(ban6),
     
-    ban7: ban7,
-    banimg7: await champImage(ban8),
+    // ban7: ban7,
+    // banimg7: await champImage(ban8),
 
-    ban8: ban8,
-    banimg8: await champImage(ban8),
+    // ban8: ban8,
+    // banimg8: await champImage(ban8),
 
-    ban9: ban9,
-    banimg9: await champImage(ban9),
+    // ban9: ban9,
+    // banimg9: await champImage(ban9),
 
-    ban10: ban10,
-    banimg10: await champImage(ban10),
+    // ban10: ban10,
+    // banimg10: await champImage(ban10),
+    summonerNames: summonerNames,
+    roles: roles,
+    teamChamps: teamChamps,
+    enemyChamps: enemyChamps,
+    bans: bans
   });
 
 }})
@@ -510,7 +557,7 @@ app.post("/update", async (req, res) => {
 })
 
 app.get("/mod", (req,res) =>{
-res.render("mod", {target: req.query.tar});
+  res.render("mod", {target: req.query.tar});
 })
 
 /**
@@ -624,7 +671,7 @@ async function champData() {
 
 async function champImage(champion){
   console.log("getting " + champion);
-  const response = await axios.get('http://ddragon.leagueoflegends.com/cdn/12.6.1/data/en_US/champion.json');
+  // const response = await axios.get('http://ddragon.leagueoflegends.com/cdn/12.6.1/data/en_US/champion.json');
   return `http://ddragon.leagueoflegends.com/cdn/13.9.1/img/champion/${champion}.png`
 }
 
