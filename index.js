@@ -19,7 +19,7 @@ const Joi = require("joi");
 const { undefined } = require("webidl-conversions");
 const { render } = require("ejs");
 
-const expireTime =24 * 60 * 60 * 1000; //expires after 1 day  (hours * minutes * seconds * millis)
+const expireTime = 24 * 60 * 60 * 1000; //expires after 1 day  (hours * minutes * seconds * millis)
 
 /* secret information section */
 const mongodb_host = process.env.MONGODB_HOST;
@@ -64,8 +64,7 @@ var logo = "logo.jpg";
 
 /* Home */
 app.get("/", (req, res) => {
-    req.session.teamCode = 0;
-    res.render('home');
+  res.render('home');
 });
 
 app.get("/createUser", (req, res) => {
@@ -73,10 +72,7 @@ app.get("/createUser", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  var code = req.query.teamCode
-  if(code != null)
-  res.render('login', {teamCode: req.query.teamCode});
-  else res.render('login', {teamCode: 0});
+  res.render('login');
 });
 
 app.post("/submitUser", async (req, res) => {
@@ -92,26 +88,26 @@ app.post("/submitUser", async (req, res) => {
     sumname: Joi.string().max(30).required(),
   });
 
-  
+
   var dbRet = await userCollection.findOne({ email: email }, { projection: { email: 1 } });
 
-  if(dbRet != null) {   
-	  res.render("dupEmail");
+  if (dbRet != null) {
+    res.render("dupEmail");
     return;
   } else {
     dbRet = await userCollection.findOne({ username: username }, { projection: { username: 1 } });
-  if (dbRet != null) {
-    res.render("dupUser");
-    return;
-  }
+    if (dbRet != null) {
+      res.render("dupUser");
+      return;
+    }
 
-  const validationResult = schema.validate({ email, username, password, sumname });
-  if (validationResult.error != null) {
-    console.log(validationResult.error);
-    res.redirect("/createUser");
-    return;
+    const validationResult = schema.validate({ email, username, password, sumname });
+    if (validationResult.error != null) {
+      console.log(validationResult.error);
+      res.redirect("/createUser");
+      return;
+    }
   }
-}
 
   var hashedPassword = await bcrypt.hash(password, saltRounds);
 
@@ -127,10 +123,11 @@ app.post("/submitUser", async (req, res) => {
   req.session.authenticated = true;
   req.session.guest = false;
   // console.log("Inserted user");
-  if(req.session.teamCode == 0){
-    res.redirect("/in");}
-    else {res.redirect(`/teamView?team=${req.session.teamCode}`)}
-    return;
+  if (req.session.teamCode == null) {
+    res.redirect("/in");
+  }
+  else { res.redirect(`/teamView`) }
+  return;
 });
 
 app.post("/loggingin", async (req, res) => {
@@ -164,10 +161,9 @@ app.post("/loggingin", async (req, res) => {
     req.session.email = result[0].email;
     req.session.username = result[0].username;
     req.session.guest = false;
-    teamCode = req.session.teamCode;
-    if(teamCode == 0)
-    res.redirect("/in");
-    else res.redirect(`/teamView?team=${teamCode}`)
+    if (req.session.teamCode == null)
+      res.redirect("/in");
+    else res.redirect(`/teamView`)
     return;
   } else {
     console.log("incorrect password");
@@ -196,7 +192,7 @@ app.post("/getPass", async (req, res) => {
     return;
   }
 
-  const result = await userCollection.find({email: email}).project({email: 1}).toArray();
+  const result = await userCollection.find({ email: email }).project({ email: 1 }).toArray();
 
   if (result.length != 1) {
     res.redirect("/email-not-found");
@@ -219,15 +215,15 @@ app.post("/getPass", async (req, res) => {
       pass: process.env.EMAIL_PASSWORD
     }
   });
-  
+
   var mailOptions = {
     from: process.env.EMAIL,
     to: email,
     subject: 'SyneRift Password Recovery Request',
     text: emailRecoveryText(token)
   };
-  
-  transporter.sendMail(mailOptions, function(error, info){
+
+  transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       console.log(error);
     } else {
@@ -242,34 +238,36 @@ app.post("/getPass", async (req, res) => {
 app.get('/reset-password', async (req, res) => {
   const token = req.query.token;
   const isValid = req.query.isValid;
-  const resetRequest = await passResetCollection.find({token: token}).project({token: 1, email: 1}).toArray();
+  const resetRequest = await passResetCollection.find({ token: token }).project({ token: 1, email: 1 }).toArray();
 
-  
+
   if (resetRequest.length !== 1) {
-    res.render('message', {title: 'Token has expired', message: 'Sorry, password reset token has expired. Please try again.', route: '/'});
+    res.render('message', { title: 'Token has expired', message: 'Sorry, password reset token has expired. Please try again.', route: '/' });
     return;
   }
 
-  res.render('resetPassword', {token: token, email: resetRequest[0].email, isValid: isValid});
+  res.render('resetPassword', { token: token, email: resetRequest[0].email, isValid: isValid });
 });
 
 /* handles resetting password */
-app.post('/resettingPassword', async (req,res) => {
+app.post('/resettingPassword', async (req, res) => {
   // check if password same
   const { token, email, password, confirmPassword } = req.body;
-  
+
   if (password !== confirmPassword) {
     return res.redirect(`/reset-password?token=${token}&isValid=false`);
   }
 
   var hashedPassword = await bcrypt.hash(password, saltRounds);
 
-  const result = await userCollection.updateOne({email: email}, {$set: {
-    password: hashedPassword
-  }});
+  const result = await userCollection.updateOne({ email: email }, {
+    $set: {
+      password: hashedPassword
+    }
+  });
 
   // remove token
-  const tokenResult = await passResetCollection.deleteOne({token: token});
+  const tokenResult = await passResetCollection.deleteOne({ token: token });
 
   // update
   if (result.modifiedCount === 1) {
@@ -304,7 +302,7 @@ app.get("/logout", async (req, res) => {
 //fix this
 app.get("/in", async (req, res) => {
   if (!req.session.authenticated || req.session.guest) {
-	console.log("You're not supposed to be here yet")
+    console.log("You're not supposed to be here yet")
     res.redirect("/");
   } else {
     const email = req.session.email;
@@ -313,7 +311,7 @@ app.get("/in", async (req, res) => {
       .project({ username: 1 })
       .toArray();
     const username = result[0].username;
-    res.render("in", {name: username, image: logo})
+    res.render("in", { name: username, image: logo })
   }
 });
 
@@ -363,56 +361,76 @@ app.post("/submitTeam", async (req, res) => {
     player5: null,
     numPlayers: 1
   });
-  res.redirect(`/teamView?team=${teamCode}&name=${req.body.teamName}`)
+  res.redirect(`/teamView`)
 })
 
 app.post("/joinTeam", async (req, res) => {
-  dbRet = await teamsCollection
-  .find({ code: req.body.teamCode})
-  .project({}).toArray();
-  if(dbRet[0] == null) {
-    res.render("cantFindTeam");
-  } 
-  else {
-    console.log(dbRet[0].teamName);
-    req.session.teamCode = req.body.teamCode
-    res.redirect(`/teamView?&name=${dbRet[0].teamName}`);
+  if (req.session.teamCode == null) {
+    req.session.teamCode = req.body.teamCode;
   }
-})
+  dbRet = await teamsCollection
+    .find({ code: req.session.teamCode })
+    .project({})
+    .toArray();
+
+  if (dbRet[0] == null) {
+    res.render("cantFindTeam");
+  } else {
+    //check if the player is already in the team
+    if ((req.session.username == dbRet[0].player1 || req.session.username == dbRet[0].player2 ||
+      req.session.username == dbRet[0].player3 || req.session.username == dbRet[0].player4 || req.session.username == dbRet[0].player5)) {
+      res.redirect("/teamView");
+    }
+    //check if there is room
+    if (dbRet[0].numPlayers + 1 < 6) {
+      var spot = "player" + (dbRet[0].numPlayers + 1);
+      console.log(spot);
+
+      await teamsCollection.updateOne(
+        { code: req.session.teamCode },
+        {
+          $set: {
+            [spot]: req.session.username,
+            numPlayers: dbRet[0].numPlayers + 1
+          }
+        }
+      );
+      res.redirect(`/teamView`);
+    }
+    else {
+      //TODO: this needs it's own error page, too many players
+      res.render("cantFindTeam");
+    }
+  }
+});
+
 
 app.get("/linkJoin", (req, res) => {
   req.session.teamCode = req.query.teamCode;
-  res.render("linkJoin", {friend: req.query.friend, teamName: req.query.name, teamCode: req.query.teamCode})
+  res.render("linkJoin", { friend: req.query.friend, teamName: req.query.name })
 })
 
-app.get("/guestJoin",(req, res) => {
+app.get("/guestJoin", (req, res) => {
   req.session.authenticated = true;
   req.session.username = "Poro " + genCode(3);
   req.session.guest = true;
   console.log(req.session.username);
-  res.redirect(`/teamView?team=${req.session.teamName}`)
+  res.post(`/joinTeam`)
 })
 
 app.get("/teamView", async (req, res) => {
   // temp
   const roles = ['Top', 'Jungle', 'Mid', 'Bot', 'Support'];
 
-  
-
-  /* end function */
-
   const champs = champData();
   if(!req.session.authenticated || req.session.teamCode == 0){
-    res.redirect("nope");
+    res.redirect("/nope");
   } else{
     console.log(req.session.username);
   dbRet = await teamsCollection
   .find({ code: req.session.teamCode})
   .project({}).toArray();
-  // test print ***
-  console.log(dbRet);
-
-  /* to format */
+ 
 var champ1 = dbRet[0].champ1;
 var champ2 = dbRet[0].champ2;
 var champ3 = dbRet[0].champ3;
@@ -535,7 +553,8 @@ var summonerNames = [dbRet[0].player1, dbRet[0].player2, dbRet[0].player3, dbRet
     bans: bans
   });
 
-}})
+  }
+})
 
 app.post("/update", async (req, res) => {
   input = req.body.champName;
@@ -544,27 +563,27 @@ app.post("/update", async (req, res) => {
     { code: req.session.teamCode },
     { $set: { [req.query.tar]: input } }
   );
-  
+
   res.redirect("/teamView");
 })
 
-app.get("/mod", (req,res) =>{
-  res.render("mod", {target: req.query.tar});
+app.get("/mod", (req, res) => {
+  res.render("mod", { target: req.query.tar });
 })
 
 /**
  * Project routes
  */
-app.get('/profile', async (req,res) => {
+app.get('/profile', async (req, res) => {
   // session check 
   if (!req.session.authenticated || req.session.guest) {
     res.redirect("/nope");
   } else {
-      // make request db for personal info
+    // make request db for personal info
     const result = await userCollection
-    .find({ email: req.session.email })
-    .project({ email: 1, password: 1, username: 1, summonerName: 1 })
-    .toArray();
+      .find({ email: req.session.email })
+      .project({ email: 1, password: 1, username: 1, summonerName: 1 })
+      .toArray();
     // populate profile page
 
     // render
@@ -577,20 +596,20 @@ app.get('/profile', async (req,res) => {
   }
 });
 
-app.get("/email-not-found", (req,res) => {
-  res.render("message", {title: 'Email Not Found', message: "Sorry the inputted email can\'t be found. Please try again.", route: "/forgotPass"})
+app.get("/email-not-found", (req, res) => {
+  res.render("message", { title: 'Email Not Found', message: "Sorry the inputted email can\'t be found. Please try again.", route: "/forgotPass" })
 });
 
-app.get("/invalid-email-error", (req,res)=> {
-  res.render("message", {title: `Email Invalid`, message: "Improper email. Please try again.", route: "/forgotPass"});
+app.get("/invalid-email-error", (req, res) => {
+  res.render("message", { title: `Email Invalid`, message: "Improper email. Please try again.", route: "/forgotPass" });
 });
 
-app.get("/password-reset-success", (req,res) => {
-  res.render("message", {title: 'Password Reset Sucessfully', message: "Password has successfully reset. You can now use your new password to log in.", route: "/"});
+app.get("/password-reset-success", (req, res) => {
+  res.render("message", { title: 'Password Reset Sucessfully', message: "Password has successfully reset. You can now use your new password to log in.", route: "/" });
 });
 
-app.get("/password-reset-failure", (req,res) => {
-  res.render("message", {title: 'Password Reset Unsucessfully', message: "Password has not been reset. Please contact us for more details.", route: "/"});
+app.get("/password-reset-failure", (req, res) => {
+  res.render("message", { title: 'Password Reset Unsucessfully', message: "Password has not been reset. Please contact us for more details.", route: "/" });
 });
 
 app.use(express.static(__dirname + "/public"));
@@ -599,12 +618,12 @@ app.use(express.static(__dirname + "/public"));
 var counter = 0;
 app.get("/eggCount", (req, res) => {
   counter++;
-  if (counter > 4){
+  if (counter > 4) {
     logo = "poro.jpg";
     counter = 0;
   }
   else {
-    logo="logo.jpg"
+    logo = "logo.jpg"
   }
   res.redirect("/in");
 })
@@ -653,7 +672,7 @@ async function champData() {
       throw new Error('Champion data not found');
     }
 
-    console.log(champs[0]);
+    //console.log(champs[0]);
     return champs;
   } catch (error) {
     console.error('Error fetching champions:', error);
@@ -666,8 +685,7 @@ async function champData() {
 //   const response = await axios.get('http://ddragon.leagueoflegends.com/cdn/12.6.1/data/en_US/champion.json');
 //   return `http://ddragon.leagueoflegends.com/cdn/13.9.1/img/champion/${champion}.png`
 // }
-function champImage(champion){
-  console.log("getting " + champion);
+function champImage(champion) {
   // const response = await axios.get('http://ddragon.leagueoflegends.com/cdn/12.6.1/data/en_US/champion.json');
   return `http://ddragon.leagueoflegends.com/cdn/13.9.1/img/champion/${champion}.png`
 }
@@ -675,7 +693,7 @@ function champImage(champion){
 
 
 const emailRecoveryText = (token) => {
-return `Hello,
+  return `Hello,
 
 We received a request to recover your account password. If you did not make this request, please ignore this email.
 
