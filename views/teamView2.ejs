@@ -7,7 +7,7 @@
       <% for (i = 0; i < 5; i++) { %>
       <div class="row m-0 p-0">
         <%- include('templates/teammateCard', {role: roles[i], summonerName: summonerNames[i], imgURL: teamChamps[i][1], champ: teamChamps[i][0], position: i }) %>
-        <%- include('templates/opponentCard', {imgURL: enemyChamps[i][1]}) %>
+        <%- include('templates/opponentCard', {champ: enemyChamps[i][0], imgURL: enemyChamps[i][1], position: i}) %>
       </div>
       <% if (i !== 4) { %>
       <hr>

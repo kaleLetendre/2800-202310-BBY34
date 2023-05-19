@@ -115,7 +115,7 @@ hr {
 }
 
 .rounded-circle:hover {
-  border: 2px solid var(--gold1);
+  border: 5px solid var(--gold1);
 }
 
 .button {

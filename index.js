@@ -396,18 +396,8 @@ app.get("/guestJoin",(req, res) => {
 app.get("/teamView", async (req, res) => {
   // temp
   const roles = ['Top', 'Jungle', 'Mid', 'Bot', 'Support'];
-  const summonerNames = ['AAAAAAAA', 'BBBBBBB','CCCCCC','DDDDDDD', 'EEEEEEE']
-  /* helper function */
-  // const formatData = (arr) => {
-  //   var teamChamps = [];
-  //   var enemyChamps = [];
-  //   var bans = [];
 
-  //   for (i = 0; i < 5; i++) {
-
-  //   }
-  // }
-
+  
 
   /* end function */
 
@@ -468,9 +458,10 @@ var bans = [
   [ban7, champImage(ban7)],
   [ban8, champImage(ban8)],
   [ban9, champImage(ban9)],
-  [ban10, champImage(ban10)],
-
+  [ban10, champImage(ban10)]
 ]
+
+var summonerNames = [dbRet[0].player1, dbRet[0].player2, dbRet[0].player3, dbRet[0].player4, dbRet[0].player5]
 /* end formatting*/
 
   res.render("teamView2", {
@@ -548,6 +539,7 @@ var bans = [
 
 app.post("/update", async (req, res) => {
   input = req.body.champName;
+  console.log(input);
   await teamsCollection.updateOne(
     { code: req.session.teamCode },
     { $set: { [req.query.tar]: input } }
@@ -669,11 +661,17 @@ async function champData() {
 }
 
 
-async function champImage(champion){
+// async function champImage(champion){
+//   console.log("getting " + champion);
+//   const response = await axios.get('http://ddragon.leagueoflegends.com/cdn/12.6.1/data/en_US/champion.json');
+//   return `http://ddragon.leagueoflegends.com/cdn/13.9.1/img/champion/${champion}.png`
+// }
+function champImage(champion){
   console.log("getting " + champion);
   // const response = await axios.get('http://ddragon.leagueoflegends.com/cdn/12.6.1/data/en_US/champion.json');
   return `http://ddragon.leagueoflegends.com/cdn/13.9.1/img/champion/${champion}.png`
 }
+
 
 
 const emailRecoveryText = (token) => {

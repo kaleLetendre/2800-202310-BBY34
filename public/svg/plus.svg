@@ -1,3 +1,3 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="style__ListItemIconPlusSvg-fxodda-12-SvgPlus gARILc">
-  <path d="M60 0H40v40H0v20h40v40h20V60h40V40H60z"></path>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -40 180 180" class="svgPath">
+  <path id="svgPath" d="M60 0H40v40H0v20h40v40h20V60h40V40H60z" stroke="#C89B3C" fill="#C89B3C"></path>
 </svg>
