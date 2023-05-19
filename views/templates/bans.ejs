@@ -1,0 +1,16 @@
+<div class="container bans collapse show" id="bans">
+  <ul class="list-group list-group-horizontal bans-row">
+    <% for (i = 0; i < 5; i++) { %>
+    <li class="list-group-item" onclick="handleChampClick()" data-id="ban<%= i + 1%>">
+      <img class="" src="<%= bans[i][0] !== 'blank' ? bans[i][1] : '/svg/plus.svg' %>" alt="">
+    </li>
+    <% } %>
+  </ul>
+  <ul class="list-group list-group-horizontal bans-row">
+    <% for (i = 5; i < 10; i++) { %>
+    <li class="list-group-item" onclick="handleChampClick()" data-id="ban<%= i + 1%>">
+      <img class="" src="<%= bans[i][0] !== 'blank' ? bans[i][1] : '/svg/plus.svg' %>" alt="">
+    </li>
+    <% } %>
+  </ul>
+</div>
