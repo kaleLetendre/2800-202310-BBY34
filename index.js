@@ -64,6 +64,7 @@ var logo = "logo.jpg";
 
 /* Home */
 app.get("/", (req, res) => {
+  req.session.teamCode = null;
   res.render('home');
 });
 

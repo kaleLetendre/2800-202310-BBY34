@@ -2,7 +2,9 @@
 <main class="room">
   <div class="container room">
     <div class="overlay"></div>
-    <%- include('templates/teamInfo')%>
+    <%- include('templates/teamInfo', {link: url + 'linkJoin?friend=' + username + '&name=' + teamName + '&teamCode=' + teamCode}) %>
+
+
     <div class="room-cards">
       <% for (i = 0; i < 5; i++) { %>
       <div class="row m-0 p-0">
