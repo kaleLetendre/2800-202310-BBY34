@@ -367,18 +367,37 @@ app.post("/submitTeam", async (req, res) => {
 })
 
 app.post("/joinTeam", async (req, res) => {
+  var teamCode = req.body.teamCode;
   dbRet = await teamsCollection
-  .find({ code: req.body.teamCode})
-  .project({}).toArray();
-  if(dbRet[0] == null) {
+    .find({ code: teamCode })
+    .project({})
+    .toArray();
+  
+  if (dbRet[0] == null) {
     res.render("cantFindTeam");
-  } 
-  else {
-    console.log(dbRet[0].teamName);
-    req.session.teamCode = req.body.teamCode
+  } else {
+    req.session.teamCode = teamCode;
+    if(dbRet[0].numPlayers + 1 < 6){
+    var spot = "player" + (dbRet[0].numPlayers + 1);
+    console.log(spot);
+    
+    await teamsCollection.updateOne(
+      { code: teamCode },
+      {
+        $set: {
+          [spot]: req.session.username,
+          numPlayers: dbRet[0].numPlayers + 1
+        }
+      }
+    );
+    
     res.redirect(`/teamView?&name=${dbRet[0].teamName}`);
-  }
-})
+  } else {
+    //this needs to be it's own error page
+    res.render("cantFindTeam");
+  }}
+});
+
 
 app.get("/linkJoin", (req, res) => {
   req.session.teamCode = req.query.teamCode;
@@ -406,7 +425,7 @@ app.get("/teamView", async (req, res) => {
   if(!req.session.authenticated || req.session.teamCode == 0){
     res.redirect("nope");
   } else{
-    console.log(req.session.username);
+    //console.log(req.session.username);
   dbRet = await teamsCollection
   .find({ code: req.session.teamCode})
   .project({}).toArray();
@@ -614,7 +633,7 @@ async function champData() {
       throw new Error('Champion data not found');
     }
 
-    console.log(champs[0]);
+    //console.log(champs[0]);
     return champs;
   } catch (error) {
     console.error('Error fetching champions:', error);
@@ -623,7 +642,7 @@ async function champData() {
 
 
 async function champImage(champion){
-  console.log("getting " + champion);
+  //console.log("getting " + champion);
   const response = await axios.get('http://ddragon.leagueoflegends.com/cdn/12.6.1/data/en_US/champion.json');
   return `http://ddragon.leagueoflegends.com/cdn/13.9.1/img/champion/${champion}.png`
 }
