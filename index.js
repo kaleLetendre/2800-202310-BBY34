@@ -307,7 +307,7 @@ app.get("/logout", async (req, res) => {
 app.get("/in", async (req, res) => {
   if (!req.session.authenticated || req.session.guest) {
     console.log("You're not supposed to be here yet")
-    res.redirect("/");
+    res.redirect("/nope");
   } else {
     const email = req.session.email;
     const result = await userCollection
