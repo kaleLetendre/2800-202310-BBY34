@@ -3,11 +3,3 @@
     <img class="rounded-circle" src="<%= champ !== 'blank' ? imgURL : '/svg/plus.svg' %>" alt="">
   </div>
 </div>
-<script>
-  const handleChampClick = () => {
-    // set action to data-id
-    const form = document.getElementById('champion-input-form');
-    form.action = "/update?tar=" + event.target.parentNode.getAttribute('data-id');
-    alert.log(imgUrl);
-  }
-</script>

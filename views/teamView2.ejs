@@ -19,3 +19,10 @@
   </div>
 </main>
 <%- include('templates/footer') %>
+<script>
+  const handleChampClick = () => {
+    // set action to data-id
+    const form = document.getElementById('champion-input-form');
+    form.action = "/update?tar=" + event.target.parentNode.getAttribute('data-id');
+  }
+</script>
