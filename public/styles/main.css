@@ -211,8 +211,19 @@ header {
 
 }
 
+/* champion input */
 .input-group-append .btn {
   height: 100%;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
+}
+
+/* bans component*/
+.container.bans {
+  padding: 0;
+
+}
+
+.list-group-item {
+  width: 20%;
 }
