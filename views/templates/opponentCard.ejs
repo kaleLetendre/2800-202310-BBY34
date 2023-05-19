@@ -1,5 +1,5 @@
 <div class="opponent-card col-3 p-0">
-  <div class="image-container container d-flex justify-content-center align-items-center h-100 w-100">
-    <img class="rounded-circle" src="<%= imgURL %>" alt="">
+  <div class="image-container container d-flex justify-content-center align-items-center h-100 w-100" onclick="handleChampClick()" data-id="enemy<%= position + 1 %>">
+    <img class="rounded-circle" src="<%= champ !== 'blank' ? imgURL : '/svg/plus.svg' %>" alt="">
   </div>
 </div>

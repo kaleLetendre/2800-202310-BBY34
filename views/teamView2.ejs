@@ -1,0 +1,28 @@
+<%- include('templates/header') %>
+<main class="room">
+  <div class="container room">
+    <div class="overlay"></div>
+    <%- include('templates/teamInfo')%>
+    <div class="room-cards">
+      <% for (i = 0; i < 5; i++) { %>
+      <div class="row m-0 p-0">
+        <%- include('templates/teammateCard', {role: roles[i], summonerName: summonerNames[i], imgURL: teamChamps[i][1], champ: teamChamps[i][0], position: i }) %>
+        <%- include('templates/opponentCard', {champ: enemyChamps[i][0], imgURL: enemyChamps[i][1], position: i}) %>
+      </div>
+      <% if (i !== 4) { %>
+      <hr>
+      <% } %>
+      <% } %>
+    </div>
+    <%- include('templates/teamComp') %>
+    <%- include('mod', {target: ''}) %>
+  </div>
+</main>
+<%- include('templates/footer') %>
+<script>
+  const handleChampClick = () => {
+    // set action to data-id
+    const form = document.getElementById('champion-input-form');
+    form.action = "/update?tar=" + event.target.parentNode.getAttribute('data-id');
+  }
+</script>

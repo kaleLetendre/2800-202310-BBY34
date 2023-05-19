@@ -1,9 +1,9 @@
-<div class="teammate-card d-flex justify-content-around col-9 p-0">
+<div class="teammate-card d-flex justify-content-around col-9 p-0" id="card-<%= position + 1 %>">
   <div class="info-container col-8">
     <h2><%= summonerName %></h2>
     <p><%= role %></p>
   </div>
-  <div class="image-container container col-4 d-flex align-items-center justify-content-center ">
-    <img class="rounded-circle img-fluid mx-auto d-block" src="<%= imgURL %>" alt="">
+  <div class="image-container container col-4 d-flex align-items-center justify-content-center" onclick="handleChampClick()" data-id="champ<%= position + 1 %>" data-value="">
+    <img class="rounded-circle img-fluid mx-auto d-block" src="<%= champ !== 'blank' ? imgURL : '/svg/plus.svg' %>" alt="">
   </div>
 </div>
