@@ -324,14 +324,18 @@ app.get("/nope", (req, res) => {
   res.render("nope");
 })
 
-app.get("/pick", async (req, res) => {
+app.get("/picks", async (req, res) => {
   const dbRet = await userCollection.find({username: req.session.username}).project({}).toArray();
-  var picks = {
-    pick1: dbRet[0].pick1,
-    pick2: dbRet[0].pick2,
-    pick3: dbRet[0].pick3
-  }
-  
+  var picks = [
+    dbRet[0].pick1,
+    dbRet[0].pick2,
+    dbRet[0].pick3
+  ];
+  var img = [];
+  img.push(champImage(dbRet[0].pick1));
+  img.push(champImage(dbRet[0].pick2));
+  img.push(champImage(dbRet[0].pick3));
+  res.render("picks", {champ: picks, img: img});
 })
 
 app.get("/findTeam", (req, res) => {
@@ -598,6 +602,21 @@ app.post("/update", async (req, res) => {
   );
 
   res.redirect("/teamView");
+})
+
+app.post("/updatePicks", async (req, res) => {
+  input = req.body.champName;
+  if(input == null){
+    res.redirect("/picks");
+    return;
+  }
+  console.log(input);
+  await userCollection.updateOne(
+    { email: req.session.email },
+    { $set: { [req.query.tar]: input } }
+  );
+
+  res.redirect("/picks");
 })
 
 app.get("/mod", (req, res) => {
