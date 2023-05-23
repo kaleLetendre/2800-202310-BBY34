@@ -1,4 +1,4 @@
-require("./utils.js");
+// require("./utils.js");
 require("dotenv").config();
 
 const axios = require('axios');
@@ -31,7 +31,7 @@ const mongodb_session_secret = process.env.MONGODB_SESSION_SECRET;
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* END secret section */
 
-var { database } = include("databaseConnection");
+var { database } = require("./databaseConnection");
 
 const userCollection = database.db(mongodb_database).collection("users");
 const teamsCollection = database.db(mongodb_database).collection("teams");
