@@ -117,7 +117,6 @@ app.post("/submitUser", async (req, res) => {
     username: username,
     password: hashedPassword,
     summonerName: sumname,
-    user_type: "basic",
     pick1: "blank",
     pick2: "blank",
     pick3: "blank"
@@ -149,7 +148,7 @@ app.post("/loggingin", async (req, res) => {
 
   const result = await userCollection
     .find({ username: username })
-    .project({ username: 1, password: 1, _id: 1, user_type: 1, email: 1 })
+    .project({})
     .toArray();
 
   console.log(result);
@@ -165,6 +164,9 @@ app.post("/loggingin", async (req, res) => {
     req.session.email = result[0].email;
     req.session.username = result[0].username;
     req.session.guest = false;
+    req.session.pick1 = result[0].pick1;
+    req.session.pick2 = result[0].pick2;
+    req.session.pick3 = result[0].pick3;
     if (req.session.teamCode == null)
       res.redirect("/in");
     else res.redirect(`/teamView`)
@@ -325,16 +327,15 @@ app.get("/nope", (req, res) => {
 })
 
 app.get("/picks", async (req, res) => {
-  const dbRet = await userCollection.find({username: req.session.username}).project({}).toArray();
   var picks = [
-    dbRet[0].pick1,
-    dbRet[0].pick2,
-    dbRet[0].pick3
+    req.session.pick1,
+    req.session.pick2,
+    req.session.pick3
   ];
   var img = [];
-  img.push(champImage(dbRet[0].pick1));
-  img.push(champImage(dbRet[0].pick2));
-  img.push(champImage(dbRet[0].pick3));
+  img.push(champImage(req.session.pick1,));
+  img.push(champImage(req.session.pick2));
+  img.push(champImage(req.session.pick3));
   res.render("picks", {champ: picks, img: img});
 })
 
@@ -448,6 +449,9 @@ app.get("/guestJoin", (req, res) => {
   req.session.authenticated = true;
   req.session.username = "Poro " + genCode(3);
   req.session.guest = true;
+  req.session.pick1 = "blank";
+  req.session.pick2 = "blank";
+  req.session.pick3 = "blank";
   console.log(req.session.username);
 })
 
@@ -458,7 +462,11 @@ app.get("/teamView", async (req, res) => {
   const champs = champData();
   if(!req.session.authenticated || req.session.teamCode == null){
     res.redirect("/nope");
-  } else{
+  }
+  else if(req.session.pick1 == "blank" || req.session.pick2 == "blank" || req.session.pick3 == "blank"){
+    res.redirect("/picks")
+  }
+  else{
     console.log(req.session.username);
   dbRet = await teamsCollection
   .find({ code: req.session.teamCode})
@@ -611,12 +619,15 @@ app.post("/updatePicks", async (req, res) => {
     return;
   }
   console.log(input);
+  req.session[req.query.tar] = input;
+  if(!req.session.guest){
   await userCollection.updateOne(
     { email: req.session.email },
     { $set: { [req.query.tar]: input } }
-  );
-
-  res.redirect("/picks");
+  );}
+  if(req.session.teamCode != null){
+    res.redirect("/teamView")
+  } else {res.redirect("/picks");}
 })
 
 app.get("/mod", (req, res) => {
