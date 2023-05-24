@@ -7,6 +7,7 @@
   --black: #010A13;
   --grey: #1E282D;
   --grey2: rgb(30,35,40);
+  --blackHex: 1,10,19;
   /* Overrides */
   --primary: var(--gold1);
   --bs-heading-color: var(--gold1);
@@ -272,9 +273,6 @@ header {
 header {
   background-color: rgb(1, 10, 19);
 }
-.nav-link {
-
-}
 
 /* champion input */
 .input-group-append .btn {
@@ -286,9 +284,26 @@ header {
 /* bans component*/
 .container.bans {
   padding: 0;
+  display: flex;
+  margin: 10px 0;
+}
 
+.bans-row {
+  width: 50%;
+  position: relative;
 }
 
 .list-group-item {
   width: 20%;
+  padding: 0;
+}
+
+.ban-overlay {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(var(--blackHex),0.7);
+  rotate:
 }
