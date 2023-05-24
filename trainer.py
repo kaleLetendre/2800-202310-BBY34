@@ -32,7 +32,6 @@ def probability_reader(predictions,champions):
                 index = j
         output.append(champions[index])
     return output
-
 # ____________________READ DATA____________________
 print ("reading data")
 path = 'data/match_data_version1_processed.pickle'
@@ -63,39 +62,66 @@ validation_data = processedData[int(len(processedData)*0.8):]
 # ____________________EXPAND DATA____________________
 print("expanding data")
 # expand the training and validation data by 20 time by replacing tail element with null values
+# training_data_x = np.zeros((len(training_data)*20, 2, 11))
+# training_data_y = np.zeros((len(training_data)*20, 11))
+# for i in range(len(training_data)):
+#     truncated = 0
+#     for j in range(20):
+#         if truncated == 0:
+#             training_data_x[i*20+j] = training_data[i]
+#         else:
+#             training_data_x[i*20+j] = training_data_x[i*20+j-1]
+#         for k in range(truncated):
+#             if truncated%2 == 0:
+#                 training_data_x[i*20+j][0][10-(int)(k/2)] = 0
+#             else:
+#                 training_data_x[i*20+j][1][10-(int)(k/2)] = 0
+#         truncated += 1
+#         training_data_y[i*20+j] = training_data[i][0]
+# validation_data_x = np.zeros((len(validation_data)*20, 2, 11))
+# validation_data_y = np.zeros((len(validation_data)*20, 11))
+# for i in range(len(validation_data)):
+#     truncated = 0
+#     for j in range(20):
+#         if truncated == 0:
+#             validation_data_x[i*20+j] = validation_data[i]
+#         else:
+#             validation_data_x[i*20+j] = validation_data_x[i*20+j-1]
+#         for k in range(truncated):
+#             if truncated%2 == 0:
+#                 validation_data_x[i*20+j][0][10-(int)(k/2)] = 0
+#             else:
+#                 validation_data_x[i*20+j][1][10-(int)(k/2)] = 0
+#         truncated += 1
+#         validation_data_y[i*20+j] = validation_data[i][0]
+
+# expand dataset by 20 times by raplacing random element with null values
+# this should encourage the model to learn to "fill in the blanks"
 training_data_x = np.zeros((len(training_data)*20, 2, 11))
 training_data_y = np.zeros((len(training_data)*20, 11))
 for i in range(len(training_data)):
-    truncated = 0
     for j in range(20):
-        if truncated == 0:
-            training_data_x[i*20+j] = training_data[i]
-        else:
-            training_data_x[i*20+j] = training_data_x[i*20+j-1]
-        for k in range(truncated):
-            if truncated%2 == 0:
-                training_data_x[i*20+j][0][10-(int)(k/2)] = 0
-            else:
-                training_data_x[i*20+j][1][10-(int)(k/2)] = 0
-        truncated += 1
+        training_data_x[i*20+j] = training_data[i]
+        for k in range(2):
+            for l in range(1,11):
+                if np.random.randint(0, 4) == 0:
+                    training_data_x[i*20+j][k][l] = 0
         training_data_y[i*20+j] = training_data[i][0]
 validation_data_x = np.zeros((len(validation_data)*20, 2, 11))
 validation_data_y = np.zeros((len(validation_data)*20, 11))
 for i in range(len(validation_data)):
-    truncated = 0
     for j in range(20):
-        if truncated == 0:
-            validation_data_x[i*20+j] = validation_data[i]
-        else:
-            validation_data_x[i*20+j] = validation_data_x[i*20+j-1]
-        for k in range(truncated):
-            if truncated%2 == 0:
-                validation_data_x[i*20+j][0][10-(int)(k/2)] = 0
-            else:
-                validation_data_x[i*20+j][1][10-(int)(k/2)] = 0
-        truncated += 1
+        validation_data_x[i*20+j] = validation_data[i]
+        for k in range(2):
+            for l in range(1,11):
+                if np.random.randint(0, 4) == 0:
+                    validation_data_x[i*20+j][k][l] = 0
         validation_data_y[i*20+j] = validation_data[i][0]
 
+print("_______________________resulting training_x_______________________")
+print(training_data_x)
+print("_______________________resulting training_y_______________________")
+print(training_data_y)
 # ____________________MAP DATA____________________
 print("mapping data to champion id index")
 # map training and validation data to champion id
@@ -177,16 +203,60 @@ print(predictions)
 model.save('model.h5')
 
 # ____________________CONTINUE TRAINING____________________
-saveNum = 1
+saveNum = 45
 while True:
     # # Step 9: Load the model
-    model = tf.keras.models.load_model('model.h5')
+    model = tf.keras.models.load_model('modles/modle' + str(saveNum-1) + '.h5')
+    # _____________________Randomize Data_____________________
+    print("randomizing data")
+    training_data_x = np.zeros((len(training_data)*20, 2, 11))
+    training_data_y = np.zeros((len(training_data)*20, 11))
+    for i in range(len(training_data)):
+        for j in range(20):
+            training_data_x[i*20+j] = training_data[i]
+            for k in range(2):
+                for l in range(1,11):
+                    if np.random.randint(0, 2) == 0:
+                        training_data_x[i*20+j][k][l] = 0
+            training_data_y[i*20+j] = training_data[i][0]
+    validation_data_x = np.zeros((len(validation_data)*20, 2, 11))
+    validation_data_y = np.zeros((len(validation_data)*20, 11))
+    for i in range(len(validation_data)):
+        for j in range(20):
+            validation_data_x[i*20+j] = validation_data[i]
+            for k in range(2):
+                for l in range(1,11):
+                    if np.random.randint(0, 2) == 0:
+                        validation_data_x[i*20+j][k][l] = 0
+            validation_data_y[i*20+j] = validation_data[i][0]
+   
+    # ____________________MAP DATA____________________
+    print("mapping data to champion id index")
+    # map training and validation data to champion id
+    for i in range(len(training_data_x)):
+        for j in range(2):
+            for k in range(11):
+                training_data_x[i][j][k] = champions.index((int)(training_data_x[i][j][k]))
+    print("resulting number of rows training_in: " + str(len(training_data_x)))
+    for i in range(len(training_data_y)):
+        for j in range(11):
+            training_data_y[i][j] = champions.index((int)(training_data_y[i][j]))
+    print("resulting number of rows training_out: " + str(len(training_data_y)))
+    for i in range(len(validation_data_x)):
+        for j in range(2):
+            for k in range(11):
+                validation_data_x[i][j][k] = champions.index((int)(validation_data_x[i][j][k]))
+    print("resulting number of rows validation_in: " + str(len(validation_data_x)))
+    for i in range(len(validation_data_y)):
+        for j in range(11):
+            validation_data_y[i][j] = champions.index((int)(validation_data_y[i][j]))
+    print("resulting number of rows validation_out: " + str(len(validation_data_y)))
+
+    # ____________________TRAIN MODEL____________________
     # continue training
-    model.fit(training_data_x, training_data_y, epochs=100, batch_size=256, validation_data=(validation_data_x, validation_data_y))
+    model.fit(training_data_x, training_data_y, epochs=10, validation_data=(validation_data_x, validation_data_y))
     # # Step 10: Evaluate the model
     model.evaluate(validation_data_x, validation_data_y)
     # # Step 11: Save the model
-    model.save('model + ' + str(saveNum) + '.h5')
+    model.save('modles/modle' + str(saveNum) + '.h5')
     saveNum += 1
-
-
