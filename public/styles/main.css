@@ -4,6 +4,7 @@
   --gold3: #32281E;
   --blue1: #0A323C;
   --blue2: #091428;
+  --blue3: 0,90,130;
   --black: #010A13;
   --grey: #1E282D;
   --grey2: rgb(30,35,40);
@@ -16,6 +17,7 @@
   --bs-body-bg: var(--black);
   --bs-body-color: var(--gold1);
   --bs-body-color-rgb: 240, 230, 210;
+  --bs-border-color: var(--gold1);
   /* bs nav */
   --bs-link-color: var(--gold1);
   --bs-link-hover-color: var(--gold2);
@@ -56,12 +58,12 @@ p {
   margin: 0;
 }
 
-hr {
+/* hr {
   height: 2px;
   width: 50%;
   /* background-color: var(--gold2); */
   background-image: linear-gradient(to right, var(--gold1), var(--gold2));
-}
+} */
 
 header {
   background-color: var(--black);
@@ -71,6 +73,10 @@ header {
   display: flex;
 }
 
+.room {
+  height: 100%;
+}
+
 .container.room {
   position: relative;
   background-image: url("/img/summoners_rift_platform.webp");
@@ -78,7 +84,7 @@ header {
   background-position: center;
   background-repeat: no-repeat;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   z-index: 0;
 }
 
@@ -91,7 +97,6 @@ header {
   z-index: -1;
   background: radial-gradient(rgba(10,50,60,0.9), var(--black));
 }
-
 
 /* home page */
 .container-home {
@@ -157,23 +162,30 @@ header {
 }
 /**/
 
+/* mod */
+.form-control:focus {
+  box-shadow: 0 0 2px 1px var(--gold2); /* Change to your desired color */
+  border-color: var(--gold2); /* Change to your desired color */
+  /* Additional styles if needed */
+}
+
+/**
+  * Room
+  */
 .content {
   position: absolute;
   z-index: 2;
 }
 
-/* .frame-box {
-  width: 100%;
-  height: 30vw;
-  background-image: url("/challenger-border.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-} */
-
 .room-cards {
   color: var(--gold2);
   margin-bottom: 10px;
+  /* height: 80%; */
+}
+
+.row {
+  height: 20%;
+  min-height: 90px;
 }
 
 .team-info {
@@ -181,11 +193,18 @@ header {
   justify-content: center;
 }
 
+.info-container {
+  display: flex;
+  padding: 10px;
+  align-items: center;
+}
+
 .rounded-circle {
   border: 3px solid var(--gold2);
-  /* margin: 7%; */
-  width: 90%;
-  height: 90%;
+  margin: 2%;
+  max-width: 100%;
+  max-height: 120px;
+  object-fit: cover;
 }
 
 .rounded-circle:hover {
@@ -241,10 +260,6 @@ header {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.image-container:focus {
-  background-color: red;
 }
 
 .image-container {
@@ -304,6 +319,37 @@ header {
   top: 0;
   left: 0;
   width: 100%;
+  height: 100%;
   background-color: rgba(var(--blackHex),0.7);
-  rotate:
+}
+
+.ban-img {
+  position: absolute;
+  height: 40%;
+  width: 40% !important;
+  z-index: 2;
+  bottom: 2px;
+  left: 30%;
+  background-color:rgb(1, 10, 19);
+  padding: 2px;
+  border-radius: 50%;;
+}
+
+/* Champion selection card */
+.blue > .info-container {
+  order: 2;
+}
+
+.red > .info-container {
+  text-align: right;
+  justify-content: end;
+}
+
+.champ-card.blue.active {
+  /* background: linear-gradient(to left, rgba(var(--blue3), 0.5), rgba(var(--blue), 0.3)); */
+  background: linear-gradient(to right, rgba(0,90,130,0.5), rgba(0,90,130,0));
+}
+
+.champ-card.red.active {
+  background: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,0.5));
 }
