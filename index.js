@@ -327,6 +327,7 @@ app.get("/logout", async (req, res) => {
 
 //fix this
 app.get("/in", async (req, res) => {
+  console.log(req.session.authenticated);
   if (!req.session.authenticated || req.session.guest) {
     console.log("You're not supposed to be here yet")
     res.redirect("/nope");
@@ -478,13 +479,15 @@ app.get("/guestJoin", (req, res) => {
 
 app.get("/teamView", async (req, res) => {
 
-
+  console.log(req.session.authenticated);
   if (!req.session.authenticated) {
     console.log("no auth");
     res.redirect("/nope");
+    return;
   }
-  if(req.session.teamCode == null) { console.log("teamcode null");
-res.redirect("/nope")}
+  if(req.session.teamCode == null) 
+  { console.log("teamcode null");
+    res.redirect("/nope")}
   else if (req.session.pick1 == "blank" || req.session.pick2 == "blank" || req.session.pick3 == "blank") {
     res.redirect("/picks")
   }
@@ -565,6 +568,7 @@ res.redirect("/nope")}
     fullList = removeDuplicates(teamChamps, fullList);
     fullList = removeDuplicates(enemyChamps, fullList);
     fullList = removeDuplicates(bans, fullList);
+    console.log(fullList);
 
 
     var rec = [];
@@ -703,11 +707,24 @@ app.get("*", (req, res) => {
 
 function removeDuplicates(list1, list2) {
   for (let i = 0; i < list2.length; i++) {
-    if(list2[i] != undefined)
-    list2[i] = list2[i].filter(item => !list1.includes(item));
+    if (list2[i] != undefined) {
+      for(k=0; k<list2[i].length; k++){
+        for(j=0; j<list1.length; j++){
+          console.log("checking " + list2[i][k] + " against " + [list1[j][0]]);
+          if(list2[i][k] === list1[j][0]){
+            console.log("found match with " + list2[i][k] + " at " + i + k + j);
+            list2[i].splice(k, 1);
+            k--;
+            j--;
+          }
+        }
+      }
+      console.log(list2[i]);
+    }
   }
   return list2;
 }
+
 
 function pickOption(list) {
   if (list.length == 0) return "poro";
