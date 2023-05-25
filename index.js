@@ -710,16 +710,16 @@ function removeDuplicates(list1, list2) {
     if (list2[i] != undefined) {
       for(k=0; k<list2[i].length; k++){
         for(j=0; j<list1.length; j++){
-          console.log("checking " + list2[i][k] + " against " + [list1[j][0]]);
+          //console.log("checking " + list2[i][k] + " against " + [list1[j][0]]);
           if(list2[i][k] === list1[j][0]){
-            console.log("found match with " + list2[i][k] + " at " + i + k + j);
+            //console.log("found match with " + list2[i][k] + " at " + i + k + j);
             list2[i].splice(k, 1);
             k--;
             j--;
           }
         }
       }
-      console.log(list2[i]);
+      //console.log(list2[i]);
     }
   }
   return list2;
