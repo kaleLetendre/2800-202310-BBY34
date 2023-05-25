@@ -695,9 +695,9 @@ app.get("/aiExample", (req, res) => {
   res.render("aiExample");
 });
 app.post("/askAI", async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   // log the first value
-  console.log(req.body["row1_input0"]);
+  // console.log(req.body["row1_input0"]);
   // convet into 2x11 array
 
   var input = [];
@@ -713,10 +713,10 @@ app.post("/askAI", async (req, res) => {
   }
 
 
-  console.log(input);
+  // console.log(input);
 
   var prediction = await ask(input);
-  console.log(prediction);
+  // console.log(prediction);
 });
 app.get("*", (req, res) => {
   res.status(404);

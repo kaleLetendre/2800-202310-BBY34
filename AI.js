@@ -1,6 +1,11 @@
-const tf = require('@tensorflow/tfjs-node');
+const tf = require('@tensorflow/tfjs');
 const fs = require('fs');
 
+async function loadModel() {
+  const model = await tf.loadLayersModel('file://modles/model.json');
+  console.log('Model loaded successfully!');
+  return model;
+}
 
 function probabilityReader(predictions, champions) {
   const output = [];
@@ -8,8 +13,8 @@ function probabilityReader(predictions, champions) {
     let highest = 0;
     let index = 0;
     for (let j = 0; j < 164; j++) {
-      if (predictions[0][i][j] > highest) {
-        highest = predictions[0][i][j];
+      if (predictions.arraySync()[0][i][j] > highest) {
+        highest = predictions.arraySync()[0][i][j];
         index = j;
       }
     }
@@ -29,49 +34,52 @@ function readChampions(path) {
 }
 
 async function ask(question) {
-    let champions = readChampions('data/champions.txt');
-    champions.push(-1); // null
-    champions.push(100); // 1st team
-    champions.push(200); // 2nd team
-    champions.push(0); // not selected
+  const champions = readChampions('champions.txt');
+  champions.push(-1); // null
+  champions.push(100); // 1st team
+  champions.push(200); // 2nd team
+  champions.push(0); // not selected
 
-    //load tflite model
-    const model = await tf.loadGraphModel('file://model.tflite');
-    tf.print(model.summary());
+  let test_data = tf.zeros([1, 2, 11], 'float32');
 
-    let test_data = tf.zeros([1, 2, 11]);
-
-    test_data = question;
-    console.log(test_data);
-
-    //____________________________________________________________pass your data into test_data in the following format____________________________________________________________
-    //RULES:
-      //order cannot be changed, and all champions must be represented by their id number (see data/champions.txt for id numbers)
-      //test_data[0][0] is the team that you are on, test_data[0][1] is the enemy team
-      //the team the goes first in the draft is team 100 (blue side), the team that goes second is team 200 (red side)
-      //the less nulll (-1 or 0) calues that are in the array, the more accurate the prediction will be
-      //-1 means the ban was identical to another or the ban was not selected
-      //0 means the pick has not been selected yet
-
-    // test_data[0][0] = [200, 81, 110, 523, 429, 60, 875, 41, 21, 154, 157];
-                    // [user_team, ban1, ban2, ban3, ban4, ban5, pick1, pick2, pick3, pick4, pick5]
-    // test_data[0][1] = [100, 523, 412, 429, 80, 58, 111, 142, 236, 78, 98];
-                    // [enemy_team, ban1, ban2, ban3, ban4, ban5, pick1, pick2, pick3, pick4, pick5]
-    //_____________________________________________________________________________________________________________________________________________________________________________
-
-    for (let i = 0; i < 2; i++) {
-        for (let j = 0; j < 11; j++) {
-            test_data[0][i][j] = champions.indexOf(parseInt(test_data[0][i][j]));
-        }
+  for (let i = 0; i < 2; i++) {
+    for (let j = 0; j < 11; j++) {
+      const value = question[i][j];
+      const indices = [0, i, j];
+      test_data = tf.tensor(test_data.arraySync().map((row, rowIdx) =>
+        rowIdx === indices[0] ? row.map((col, colIdx) =>
+          colIdx === indices[1] ? col.map((_, cellIdx) =>
+            cellIdx === indices[2] ? value : col[cellIdx]
+          ) : col
+        ) : row
+      ));
     }
+  }
 
-    const predictions = model.predict(test_data); 
+  test_data = tf.tensor(test_data.arraySync().map((row, i) =>
+    row.map((col, j) =>
+      col.map(cell => champions.indexOf(parseInt(cell)))
+    )
+  ));
+
+  console.log(test_data.shape);
+  try {
+
+    // Load the model
+    const model = await loadModel();
+
+    // Reshape test_data to match the expected shape [null, 2, 11]
+    const reshapedTestData = tf.reshape(test_data, [1, 2, 11]);
+
+    // Make predictions
+    const predictions = model.predict(reshapedTestData);
     const result = probabilityReader(predictions, champions);
 
-    console.log(result); //this is the result, an 11 element array of the most probable champion for each position
-    //[team, ban1, ban2, ban3, ban4, ban5, pick1, pick2, pick3, pick4, pick5]
-    return result; //return the result (11 element array)
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.error('Error loading the model:', error);
+  }
 }
 
 module.exports = ask;
-

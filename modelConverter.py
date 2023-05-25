@@ -1,12 +1,7 @@
+import tensorflowjs as tfjs
 import tensorflow as tf
 
-# Load the HDF5 model
-h5_model = tf.keras.models.load_model('modles/modle44.h5')
-
 # Convert the model
-converter = tf.lite.TFLiteConverter.from_keras_model(h5_model)
-tflite_model = converter.convert()
+model = tf.keras.models.load_model('modles/modle30.h5')
 
-# Save the model
-with open('model.tflite', 'wb') as f:
-    f.write(tflite_model)
+tfjs.converters.save_keras_model(model, 'modles')
