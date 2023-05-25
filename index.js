@@ -457,7 +457,7 @@ app.get("/guestJoin", (req, res) => {
 
 app.get("/teamView", async (req, res) => {
   // temp
-  const roles = ['Top', 'Jungle', 'Mid', 'Bot', 'Support'];
+  // const roles = ['Top', 'Jungle', 'Mid', 'Bot', 'Support'];
 
   const champs = champData();
   if(!req.session.authenticated || req.session.teamCode == null){
