@@ -8,7 +8,7 @@
     <div class="room-cards">
       <% for (i = 0; i < 5; i++) { %>
       <div class="row m-0 p-0">
-        <%- include('templates/teammateCard', {role: roles[i], summonerName: summonerNames[i], imgURL: teamChamps[i][1], champ: teamChamps[i][0], position: i }) %>
+        <%- include('templates/teammateCard', {summonerName: summonerNames[i], imgURL: teamChamps[i][1], champ: teamChamps[i][0], position: i }) %>
         <%- include('templates/opponentCard', {champ: enemyChamps[i][0], imgURL: enemyChamps[i][1], position: i}) %>
       </div>
       <% if (i !== 4) { %>
@@ -27,7 +27,7 @@
       bans: bans
     }) %>
     <!-- temp -->
-    <%- include('templates/teams') %>
+    <%- include('templates/teams', {champImg: rec}) %>
     <%- include('mod', {target: ''}) %>
   </div>
 </main>

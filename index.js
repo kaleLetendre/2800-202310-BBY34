@@ -336,7 +336,7 @@ app.get("/picks", async (req, res) => {
   img.push(champImage(req.session.pick1,));
   img.push(champImage(req.session.pick2));
   img.push(champImage(req.session.pick3));
-  res.render("picks", {champ: picks, img: img});
+  res.render("picks", { champ: picks, img: img });
 })
 
 app.get("/findTeam", (req, res) => {
@@ -391,7 +391,7 @@ app.post("/joinTeam", async (req, res) => {
     req.session.authenticated = true;
     req.session.username = "Poro " + genCode(3);
     req.session.guest = true;
-    console.log(req.session.username);
+
   }
   dbRet = await teamsCollection
     .find({ code: req.session.teamCode })
@@ -419,7 +419,7 @@ app.post("/joinTeam", async (req, res) => {
   // Check if there is room in the team
   if (dbRet[0].numPlayers + 1 < 6) {
     var spot = "player" + (dbRet[0].numPlayers + 1);
-    console.log(spot);
+
 
     await teamsCollection.updateOne(
       { code: req.session.teamCode },
@@ -452,158 +452,128 @@ app.get("/guestJoin", (req, res) => {
   req.session.pick1 = "blank";
   req.session.pick2 = "blank";
   req.session.pick3 = "blank";
-  console.log(req.session.username);
+
 })
 
 app.get("/teamView", async (req, res) => {
-  // temp
-  const roles = ['Top', 'Jungle', 'Mid', 'Bot', 'Support'];
 
-  const champs = champData();
-  if(!req.session.authenticated || req.session.teamCode == null){
+
+  if (!req.session.authenticated || req.session.teamCode == null) {
     res.redirect("/nope");
   }
-  else if(req.session.pick1 == "blank" || req.session.pick2 == "blank" || req.session.pick3 == "blank"){
+  else if (req.session.pick1 == "blank" || req.session.pick2 == "blank" || req.session.pick3 == "blank") {
     res.redirect("/picks")
   }
-  else{
-    console.log(req.session.username);
-  dbRet = await teamsCollection
-  .find({ code: req.session.teamCode})
-  .project({}).toArray();
- 
-var champ1 = dbRet[0].champ1;
-var champ2 = dbRet[0].champ2;
-var champ3 = dbRet[0].champ3;
-var champ4 = dbRet[0].champ4;
-var champ5 = dbRet[0].champ5;
-var enemy1 = dbRet[0].enemy1;
-var enemy2 = dbRet[0].enemy2;
-var enemy3 = dbRet[0].enemy3;
-var enemy4 = dbRet[0].enemy4;
-var enemy5 = dbRet[0].enemy5;
-var ban1 = dbRet[0].ban1;
-var ban2 = dbRet[0].ban2;
-var ban3 = dbRet[0].ban3;
-var ban4 = dbRet[0].ban4;
-var ban5 = dbRet[0].ban5;
-var ban6 = dbRet[0].ban6;
-var ban7 = dbRet[0].ban7;
-var ban8 = dbRet[0].ban8;
-var ban9 = dbRet[0].ban9;
-var ban10 = dbRet[0].ban10;
+  else {
 
-var teamChamps = [
-  [champ1, champImage(champ1)],
-  [champ2, champImage(champ2)],
-  [champ3, champImage(champ3)],
-  [champ4, champImage(champ4)],
-  [champ5, champImage(champ5)],
-];
-var enemyChamps = [
-  [enemy1, champImage(enemy1)],
-  [enemy2, champImage(enemy2)],
-  [enemy3, champImage(enemy3)],
-  [enemy4, champImage(enemy4)],
-  [enemy5, champImage(enemy5)],
-]
-var bans = [
-  [ban1, champImage(ban1)],
-  [ban2, champImage(ban2)],
-  [ban3, champImage(ban3)],
-  [ban4, champImage(ban4)],
-  [ban5, champImage(ban5)],
-  [ban6, champImage(ban6)],
-  [ban7, champImage(ban7)],
-  [ban8, champImage(ban8)],
-  [ban9, champImage(ban9)],
-  [ban10, champImage(ban10)]
-]
+    dbRet = await teamsCollection
+      .find({ code: req.session.teamCode })
+      .project({}).toArray();
 
-var summonerNames = [dbRet[0].player1, dbRet[0].player2, dbRet[0].player3, dbRet[0].player4, dbRet[0].player5]
-/* end formatting*/
+    //Random recommendations
 
-  res.render("teamView2", {
-    teamCode: req.session.teamCode,
-    teamName: dbRet[0].teamName,
-    username: req.session.username,
-    url: process.env.URL,
-    // champ1: champ1,
-    // img1: await champImage(champ1),
 
-    // champ2: champ2,
-    // img2: await champImage(champ2),
+    var champ1 = dbRet[0].champ1;
+    var champ2 = dbRet[0].champ2;
+    var champ3 = dbRet[0].champ3;
+    var champ4 = dbRet[0].champ4;
+    var champ5 = dbRet[0].champ5;
+    var enemy1 = dbRet[0].enemy1;
+    var enemy2 = dbRet[0].enemy2;
+    var enemy3 = dbRet[0].enemy3;
+    var enemy4 = dbRet[0].enemy4;
+    var enemy5 = dbRet[0].enemy5;
+    var ban1 = dbRet[0].ban1;
+    var ban2 = dbRet[0].ban2;
+    var ban3 = dbRet[0].ban3;
+    var ban4 = dbRet[0].ban4;
+    var ban5 = dbRet[0].ban5;
+    var ban6 = dbRet[0].ban6;
+    var ban7 = dbRet[0].ban7;
+    var ban8 = dbRet[0].ban8;
+    var ban9 = dbRet[0].ban9;
+    var ban10 = dbRet[0].ban10;
 
-    // champ3: champ3,
-    // img3: await champImage(champ3),
+    var teamChamps = [
+      [champ1, champImage(champ1)],
+      [champ2, champImage(champ2)],
+      [champ3, champImage(champ3)],
+      [champ4, champImage(champ4)],
+      [champ5, champImage(champ5)],
+    ];
+    var enemyChamps = [
+      [enemy1, champImage(enemy1)],
+      [enemy2, champImage(enemy2)],
+      [enemy3, champImage(enemy3)],
+      [enemy4, champImage(enemy4)],
+      [enemy5, champImage(enemy5)],
+    ]
+    var bans = [
+      [ban1, champImage(ban1)],
+      [ban2, champImage(ban2)],
+      [ban3, champImage(ban3)],
+      [ban4, champImage(ban4)],
+      [ban5, champImage(ban5)],
+      [ban6, champImage(ban6)],
+      [ban7, champImage(ban7)],
+      [ban8, champImage(ban8)],
+      [ban9, champImage(ban9)],
+      [ban10, champImage(ban10)]
+    ]
 
-    // champ4: champ4,
-    // img4: await champImage(champ4),
+    console.log(await userCollection.find({ username: dbRet[0].player1 }).project({ pick1: 1, pick2: 1, pick3: 1 }).toArray()[0]);
+    var p1Ret = await userCollection.find({ username: dbRet[0].player1 }).project({ pick1: 1, pick2: 1, pick3: 1 }).toArray();
+    var p2Ret = await userCollection.find({ username: dbRet[0].player2 }).project({ pick1: 1, pick2: 1, pick3: 1 }).toArray();
+    var p3Ret = await userCollection.find({ username: dbRet[0].player3 }).project({ pick1: 1, pick2: 1, pick3: 1 }).toArray();
+    var p4Ret = await userCollection.find({ username: dbRet[0].player4 }).project({ pick1: 1, pick2: 1, pick3: 1 }).toArray();
+    var p5Ret = await userCollection.find({ username: dbRet[0].player5 }).project({ pick1: 1, pick2: 1, pick3: 1 }).toArray();
 
-    // champ5: champ5,
-    // img5: await champImage(champ5),
+    var p1list, p2list, p3list, p4list, p5list;
 
-    // enemy1: enemy1,
-    // enimg1: await champImage(enemy1),
-    
-    // enemy2: enemy2,
-    // enimg2: await champImage(enemy2),
+    if (p1Ret.length > 0) p1list = [p1Ret[0].pick1, p1Ret[0].pick2, p1Ret[0].pick3]; else p1List = [];
+    if (p2Ret.length > 0) p2list = [p2Ret[0].pick1, p2Ret[0].pick2, p2Ret[0].pick3]; else p2list = [];
+    if (p3Ret.length > 0) p3list = [p3Ret[0].pick1, p3Ret[0].pick2, p3Ret[0].pick3]; else p3list = [];
+    if (p4Ret.length > 0) p4list = [p4Ret[0].pick1, p4Ret[0].pick2, p4Ret[0].pick3]; else p4list = [];
+    if (p5Ret.length > 0) p5list = [p5Ret[0].pick1, p5Ret[0].pick2, p5Ret[0].pick3]; else p5list = [];
 
-    // enemy3: enemy3,
-    // enimg3: await champImage(enemy3),
 
-    // enemy4: enemy4,
-    // enimg4: await champImage(enemy4),
+    var fullList = [p1list, p2list, p3list, p4list, p5list];
+    fullList = removeDuplicates(teamChamps, fullList);
+    fullList = removeDuplicates(enemyChamps, fullList);
+    fullList = removeDuplicates(bans, fullList);
 
-    // enemy5: enemy5,
-    // enimg5: await champImage(enemy5),
 
-    // ban1: ban1,
-    // banimg1: await champImage(ban1),
+    var rec = [];
+    for (i = 0; i < 5; i++) {
+      rec.push(champImage(pickOption(fullList[i])))
+    }
 
-    // ban2: ban2,
-    // banimg2: await champImage(ban2),
+    var summonerNames = [dbRet[0].player1, dbRet[0].player2, dbRet[0].player3, dbRet[0].player4, dbRet[0].player5]
+    /* end formatting*/
 
-    // ban3: ban3,
-    // banimg3: await champImage(ban3),
+    res.render("teamView2", {
+      teamCode: req.session.teamCode,
+      teamName: dbRet[0].teamName,
+      username: req.session.username,
+      url: process.env.URL,
 
-    // ban4: ban4,
-    // banimg4: await champImage(ban4),
-
-    // ban5: ban5,
-    // banimg5: await champImage(ban5),
-
-    // ban6: ban6,
-    // banimg6: await champImage(ban6),
-    
-    // ban7: ban7,
-    // banimg7: await champImage(ban8),
-
-    // ban8: ban8,
-    // banimg8: await champImage(ban8),
-
-    // ban9: ban9,
-    // banimg9: await champImage(ban9),
-
-    // ban10: ban10,
-    // banimg10: await champImage(ban10),
-    summonerNames: summonerNames,
-    roles: roles,
-    teamChamps: teamChamps,
-    enemyChamps: enemyChamps,
-    bans: bans
-  });
+      summonerNames: summonerNames,
+      teamChamps: teamChamps,
+      enemyChamps: enemyChamps,
+      bans: bans,
+      rec: rec
+    });
 
   }
 })
 
 app.post("/update", async (req, res) => {
   input = req.body.champName;
-  if(input == null){
+  if (input == null) {
     res.redirect("/teamView");
     return;
   }
-  console.log(input);
+
   await teamsCollection.updateOne(
     { code: req.session.teamCode },
     { $set: { [req.query.tar]: input } }
@@ -614,20 +584,21 @@ app.post("/update", async (req, res) => {
 
 app.post("/updatePicks", async (req, res) => {
   input = req.body.champName;
-  if(input == null){
+  if (input == null) {
     res.redirect("/picks");
     return;
   }
-  console.log(input);
+
   req.session[req.query.tar] = input;
-  if(!req.session.guest){
-  await userCollection.updateOne(
-    { email: req.session.email },
-    { $set: { [req.query.tar]: input } }
-  );}
-  if(req.session.teamCode != null){
+  if (!req.session.guest) {
+    await userCollection.updateOne(
+      { email: req.session.email },
+      { $set: { [req.query.tar]: input } }
+    );
+  }
+  if (req.session.teamCode != null) {
     res.redirect("/teamView")
-  } else {res.redirect("/picks");}
+  } else { res.redirect("/picks"); }
 })
 
 app.get("/mod", (req, res) => {
@@ -703,6 +674,22 @@ app.get("*", (req, res) => {
 /**
  * Helper Functions
  */
+
+function removeDuplicates(list1, list2) {
+  for (let i = 0; i < list2.length; i++) {
+    list2[i] = list2[i].filter(item => !list1.includes(item));
+  }
+  return list2;
+}
+
+function pickOption(list) {
+  if (list.length == 0) return "poro";
+  const randomIndex = Math.floor(Math.random() * list.length);
+  console.log(list[randomIndex]);
+  return list[randomIndex];
+
+}
+
 function genCode(length) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let code = '';
@@ -711,7 +698,6 @@ function genCode(length) {
     const randomIndex = Math.floor(Math.random() * characters.length);
     code += characters.charAt(randomIndex);
   }
-  console.log(code);
   return code;
 }
 
@@ -749,9 +735,11 @@ async function champData() {
 //   return `http://ddragon.leagueoflegends.com/cdn/13.9.1/img/champion/${champion}.png`
 // }
 function champImage(champion) {
-  // const response = await axios.get('http://ddragon.leagueoflegends.com/cdn/12.6.1/data/en_US/champion.json');
+  console.log(champion);
+  if (champion == "poro") return "poro.jpg";
   return `http://ddragon.leagueoflegends.com/cdn/13.9.1/img/champion/${champion}.png`
 }
+
 
 
 
