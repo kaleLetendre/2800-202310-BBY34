@@ -11,12 +11,12 @@
       <div class="row m-0 p-0">
         <%- include('templates/champCard', {
           role: roles[i], 
-          summonerName: (userTeam == 'blue') ?summonerNames[i] : '', imgURL: (userTeam == 'blue') ? teamChamps[i][1] : enemyChamps[i][1], champ: (userTeam == 'blue') ? teamChamps[i][0] : enemyChamps[i][0], position: i, 
+          summonerName: (userTeam == 'blue') ? summonerNames[i] : '', imgURL: (userTeam == 'blue') ? teamChamps[i][1] : enemyChamps[i][1], champ: (userTeam == 'blue') ? teamChamps[i][0] : enemyChamps[i][0], position: i, 
           team: 'blue' 
           }) %>
         <%- include('templates/champCard', {
           role: roles[i], 
-          summonerName: (userTeam == 'red') ?summonerNames[i] : '', imgURL: (userTeam == 'red') ? teamChamps[i][1] : enemyChamps[i][1], champ: (userTeam == 'red') ? teamChamps[i][0] : enemyChamps[i][0], 
+          summonerName: (userTeam == 'red') ? summonerNames[i] : '', imgURL: (userTeam == 'red') ? teamChamps[i][1] : enemyChamps[i][1], champ: (userTeam == 'red') ? teamChamps[i][0] : enemyChamps[i][0], 
           position: i, 
           team: 'red' }) %>
       </div>
