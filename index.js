@@ -600,14 +600,16 @@ var summonerNames = [dbRet[0].player1, dbRet[0].player2, dbRet[0].player3, dbRet
 
 app.post("/update", async (req, res) => {
   input = req.body.champName;
-  if(input == null){
+  target = req.query.tar;
+  if(input == null || target == ""){
+    console.log("empty");
     res.redirect("/teamView");
     return;
   }
   console.log(input);
   await teamsCollection.updateOne(
     { code: req.session.teamCode },
-    { $set: { [req.query.tar]: input } }
+    { $set: { [target]: input } }
   );
 
   res.redirect("/teamView");
@@ -615,7 +617,8 @@ app.post("/update", async (req, res) => {
 
 app.post("/updatePicks", async (req, res) => {
   input = req.body.champName;
-  if(input == null){
+  target = req.query.tar;
+  if(input == null || target == ""){
     res.redirect("/picks");
     return;
   }
@@ -624,7 +627,7 @@ app.post("/updatePicks", async (req, res) => {
   if(!req.session.guest){
   await userCollection.updateOne(
     { email: req.session.email },
-    { $set: { [req.query.tar]: input } }
+    { $set: { [target]: input } }
   );}
   if(req.session.teamCode != null){
     res.redirect("/teamView")
