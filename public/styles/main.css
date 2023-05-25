@@ -353,3 +353,26 @@ header {
 .champ-card.red.active {
   background: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,0.5));
 }
+
+/* Back Nav Bar */
+.nav-back-btn {
+  background: none;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+  width: 10%;
+  max-width: 80px;
+  max-height: 80px;
+  padding: 10px;
+}
+
+.nav-back-btn img {
+  width: 50%;
+  min-width: 30px;
+  max-width: 30px;
+  height: 10%;
+}
+
+.center {
+
+}
