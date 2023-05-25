@@ -58,13 +58,6 @@ p {
   margin: 0;
 }
 
-/* hr {
-  height: 2px;
-  width: 50%;
-  /* background-color: var(--gold2); */
-  background-image: linear-gradient(to right, var(--gold1), var(--gold2));
-} */
-
 header {
   background-color: var(--black);
 }
@@ -373,6 +366,22 @@ header {
   height: 10%;
 }
 
-.center {
+/* Login */
+.login-container {
+  background-image: url("../img/lol-img-1.avif");
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
 
+}
+
+.text-center {
+  background-color: rgba(1,10,19, 0.9);
+  padding: 10px;
+}
+
+
+
+.form.signin {
+  height: 400px;;
 }
