@@ -129,7 +129,17 @@ app.post("/submitUser", async (req, res) => {
   if (req.session.teamCode == null) {
     res.redirect("/in");
   }
-  else { res.redirect(`/teamView`) }
+  else { 
+    await teamsCollection.updateOne(
+      { code: req.session.teamCode },
+      {
+        $set: {
+          [spot]: req.session.username,
+          numPlayers: dbRet[0].numPlayers + 1
+        }
+      }
+    );
+    res.redirect(`/teamView`) }
   return;
 });
 
@@ -169,7 +179,17 @@ app.post("/loggingin", async (req, res) => {
     req.session.pick3 = result[0].pick3;
     if (req.session.teamCode == null)
       res.redirect("/in");
-    else res.redirect(`/teamView`)
+    else {await teamsCollection.updateOne(
+      { code: req.session.teamCode },
+      {
+        $set: {
+          [spot]: req.session.username,
+          numPlayers: dbRet[0].numPlayers + 1
+        }
+      }
+    );
+      res.redirect(`/teamView`)
+  }
     return;
   } else {
     console.log("incorrect password");
@@ -350,6 +370,7 @@ app.get("/createTeam", (req, res) => {
 app.post("/submitTeam", async (req, res) => {
   var teamCode = genCode(10);
   req.session.teamCode = teamCode;
+  console.log(req.session.teamCode);
   await teamsCollection.insertOne({
     teamName: req.body.teamName,
     code: teamCode,
@@ -458,9 +479,12 @@ app.get("/guestJoin", (req, res) => {
 app.get("/teamView", async (req, res) => {
 
 
-  if (!req.session.authenticated || req.session.teamCode == null) {
+  if (!req.session.authenticated) {
+    console.log("no auth");
     res.redirect("/nope");
   }
+  if(req.session.teamCode == null) { console.log("teamcode null");
+res.redirect("/nope")}
   else if (req.session.pick1 == "blank" || req.session.pick2 == "blank" || req.session.pick3 == "blank") {
     res.redirect("/picks")
   }
@@ -521,7 +545,7 @@ app.get("/teamView", async (req, res) => {
       [ban10, champImage(ban10)]
     ]
 
-    console.log(await userCollection.find({ username: dbRet[0].player1 }).project({ pick1: 1, pick2: 1, pick3: 1 }).toArray()[0]);
+    
     var p1Ret = await userCollection.find({ username: dbRet[0].player1 }).project({ pick1: 1, pick2: 1, pick3: 1 }).toArray();
     var p2Ret = await userCollection.find({ username: dbRet[0].player2 }).project({ pick1: 1, pick2: 1, pick3: 1 }).toArray();
     var p3Ret = await userCollection.find({ username: dbRet[0].player3 }).project({ pick1: 1, pick2: 1, pick3: 1 }).toArray();
@@ -544,8 +568,10 @@ app.get("/teamView", async (req, res) => {
 
 
     var rec = [];
+    var champList = [champ1, champ2, champ3, champ4, champ5];
     for (i = 0; i < 5; i++) {
-      rec.push(champImage(pickOption(fullList[i])))
+      if(champList[i] != "blank") rec.push(champImage(champList[i]))
+      else rec.push(champImage(pickOption(fullList[i])))
     }
 
     var summonerNames = [dbRet[0].player1, dbRet[0].player2, dbRet[0].player3, dbRet[0].player4, dbRet[0].player5]
@@ -677,6 +703,7 @@ app.get("*", (req, res) => {
 
 function removeDuplicates(list1, list2) {
   for (let i = 0; i < list2.length; i++) {
+    if(list2[i] != undefined)
     list2[i] = list2[i].filter(item => !list1.includes(item));
   }
   return list2;
@@ -685,7 +712,7 @@ function removeDuplicates(list1, list2) {
 function pickOption(list) {
   if (list.length == 0) return "poro";
   const randomIndex = Math.floor(Math.random() * list.length);
-  console.log(list[randomIndex]);
+  
   return list[randomIndex];
 
 }
@@ -735,7 +762,7 @@ async function champData() {
 //   return `http://ddragon.leagueoflegends.com/cdn/13.9.1/img/champion/${champion}.png`
 // }
 function champImage(champion) {
-  console.log(champion);
+  
   if (champion == "poro") return "poro.jpg";
   return `http://ddragon.leagueoflegends.com/cdn/13.9.1/img/champion/${champion}.png`
 }
