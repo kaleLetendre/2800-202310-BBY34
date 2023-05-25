@@ -1,4 +1,4 @@
-// require("./utils.js");
+require("./utils.js");
 require("dotenv").config();
 
 const axios = require('axios');
@@ -31,7 +31,7 @@ const mongodb_session_secret = process.env.MONGODB_SESSION_SECRET;
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* END secret section */
 
-var { database } = require("./databaseConnection");
+var { database } = include("databaseConnection");
 
 const userCollection = database.db(mongodb_database).collection("users");
 const teamsCollection = database.db(mongodb_database).collection("teams");
@@ -122,9 +122,13 @@ app.post("/submitUser", async (req, res) => {
     pick3: "blank"
   });
 
+  req.session.username = username;
   req.session.email = email;
   req.session.authenticated = true;
   req.session.guest = false;
+  req.session.pick1 = "blank";
+  req.session.pick2 = "blank";
+  req.session.pick3 = "blank";
   // console.log("Inserted user");
   if (req.session.teamCode == null) {
     res.redirect("/in");
@@ -348,6 +352,7 @@ app.get("/createTeam", (req, res) => {
 })
 
 app.post("/submitTeam", async (req, res) => {
+  console.log(req.session.username);
   var teamCode = genCode(10);
   req.session.teamCode = teamCode;
   await teamsCollection.insertOne({
@@ -591,8 +596,7 @@ var summonerNames = [dbRet[0].player1, dbRet[0].player2, dbRet[0].player3, dbRet
     roles: roles,
     teamChamps: teamChamps,
     enemyChamps: enemyChamps,
-    bans: bans,
-    userTeam: 'red'
+    bans: bans
   });
 
   }
@@ -649,14 +653,13 @@ app.get('/profile', async (req, res) => {
     // make request db for personal info
     const result = await userCollection
       .find({ email: req.session.email })
-      .project({ email: 1, password: 1, username: 1, summonerName: 1 })
+      .project({ email: 1, username: 1, summonerName: 1 })
       .toArray();
     // populate profile page
 
     // render
     res.render('profile', {
       username: result[0].username,
-      password: result[0].password,
       email: result[0].email,
       summonerName: result[0].summonerName
     });
