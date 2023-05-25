@@ -1,0 +1,13 @@
+<%- include("templates/header") %>
+<div class="px-4 py-5 my-5 text-center">
+    <img class="d-block mx-auto mb-4" src="dog.jpg" alt="" width="72" height="57">
+    <h1 class="display-5 fw-bold text-body-emphasis">Admin Privilages</h1>
+  </div>
+
+<ul>
+    <% let i = 0;
+    for (i=0; i< users.length; i++){ %>
+        <%- include("templates/user", {user: users[i]}) %>
+    <% } %>
+</ul>
+<%- include("templates/footer") %>

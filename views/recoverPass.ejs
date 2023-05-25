@@ -1,0 +1,30 @@
+<%- include("templates/header") %>
+<div class="px-4 py-5 my-5 text-center">
+  <img
+    class="d-block mx-auto mb-4"
+    src="AngryOtter.jpg"
+    alt=""
+    width="72"
+    height="57"
+  />
+  <h1 class="display-5 fw-bold text-body-emphasis">Recovery Email Sent</h1>
+  <div class="col-lg-6 mx-auto">
+    <p class="lead mb-4">
+      Thank you for initiating a password recovery request. We have sent an
+      email to your registered email address with instructions on how to reset
+      your password. Please check your inbox and follow the instructions
+      provided. If you do not receive the email within a few minutes, please
+      check your spam folder or contact our support team for further assistance.
+    </p>
+    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+      <button
+        onclick="window.location.href='/login'"
+        type="button"
+        class="btn btn-primary btn-lg px-4 gap-3"
+      >
+        Return to Log in
+      </button>
+    </div>
+  </div>
+</div>
+<%- include("templates/footer") %>
