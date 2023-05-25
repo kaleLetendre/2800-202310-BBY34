@@ -596,7 +596,8 @@ var summonerNames = [dbRet[0].player1, dbRet[0].player2, dbRet[0].player3, dbRet
     roles: roles,
     teamChamps: teamChamps,
     enemyChamps: enemyChamps,
-    bans: bans
+    bans: bans,
+    userTeam: 'red'
   });
 
   }
