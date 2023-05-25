@@ -322,7 +322,7 @@ app.post('/resettingPassword', async (req, res) => {
 app.get("/logout", async (req, res) => {
   console.log("removing session from db");
   req.session.destroy();
-  res.render("loggedOut");
+  res.redirect("/");
 });
 
 //fix this
@@ -344,7 +344,7 @@ app.get("/in", async (req, res) => {
 
 app.get("/nope", (req, res) => {
   res.status(403);
-  res.render("nope");
+  res.redirect("/");
 })
 
 app.get("/picks", async (req, res) => {

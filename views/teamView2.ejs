@@ -3,8 +3,12 @@
   <div class="container room">
     <div class="overlay"></div>
     <%- include('templates/teamInfo', {link: url + 'linkJoin?friend=' + username + '&name=' + teamName + '&teamCode=' + teamCode}) %>
-
-
+    <br>
+    <h3 class="text-center">How to use</h3>
+    <p class="text-center" width="500">During the drafting process, click on the spot you want to enter, type in the champion at the bottom *with first letter capitalized and spelt correctly*.
+      Your team is the left, other team on the right. To view which team composition we recommend, click the 'Recommendation' button to toggle between setting bans and viewing the team we suggest! Poros mean the slot is empty or all of your favorite champs are unavailable.
+    </p>
+    <br>
     <div class="room-cards">
       <% for (i = 0; i < 5; i++) { %>
       <div class="row m-0 p-0">
@@ -20,7 +24,7 @@
       <button type="button" id="bansButton" class="btn btn-secondary active">Bans
       </button>
       <button class="btn btn-secondary" id="teamsButton">
-        Teams
+        Recommendation
       </button>
     </div>
     <%- include('templates/bans', {
