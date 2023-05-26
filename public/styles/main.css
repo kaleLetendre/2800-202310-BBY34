@@ -1,3 +1,4 @@
+/* Global */
 :root {
   --gold1: #F0E6D2;
   --gold2: #C89B3C;
@@ -70,7 +71,7 @@ header {
   background-color: var(--black);
 }
 
-/* home page */
+/* Home Page */
 .container-home {
   position: relative;
   background-image: url("/img/summoners_rift_platform.webp");
@@ -401,19 +402,29 @@ header {
   background-size: cover;
   background-position: center;
   height: 100vh;
-
-}
-.form-floating{
-  padding: 3px;
 }
 
+.text-center {
+  background-color: rgba(1,10,19, 0.9);
+  padding: 10px;
+}
+
+.form.signin {
+  height: 400px;
+}
+
+/* Profile */
+.form-control:disabled {
+  background-color: transparent;
+}
+
+/* Home Page */
+#home-welcome-text {
+  text-align: center;
+}
+
+/* zed */
 #greeting{
   text-align: center;
   font-weight: bold;
-}
-
-footer{
-  position: absolute;
-  bottom: 0;
-  width: 85%;
 }
