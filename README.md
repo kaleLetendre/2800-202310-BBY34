@@ -59,16 +59,16 @@ Make sure you have the following installed on your system:
 
 1. Languages
 
-- HTML, CSS, JavaScript, Python
+  - HTML, CSS, JavaScript, Python
 
 2. IDEs
 
-- any IDE of your choice (e.g. Visual Studio Code)
+  - any IDE of your choice (e.g. Visual Studio Code)
 
 3. Database system
 
-- MongoDB
-- Note: You will require your own user account and have installed MongoDB. Follow the instructions here: https://www.mongodb.com/docs/atlas/
+  - MongoDB
+  - Note: You will require your own user account and have installed MongoDB. Follow the instructions here:          https://www.mongodb.com/docs/atlas/
 
 ### Instructions
 
@@ -76,30 +76,30 @@ Make sure you have the following installed on your system:
 
 2. Install dependencies
 
-Navigate to the project directory:
+  Navigate to the project directory:
 
-cd synerift
+  cd synerift
 
-Install the required Node.js packages:
+  Install the required Node.js packages:
 
-npm install
+  npm install
 
 3. Configure environment variables
 
-Create a new file named .env in the project root directory. This file will store your environment variables.
+  Create a new file named .env in the project root directory. This file will store your environment variables.
 
-Open the .env file and add the following configuration:
+  Open the .env file and add the following configuration:
 
-MONGODB_HOST=your_database_host
-MONGODB_USER=your_database_user
-MONGODB_PASSWORD=your_database_password
-MONGODB_DATABASE=your_database
-MONGODB_SESSION_SECRET=
-NODE_SESSION_SECRET=
-PORT=your_desired_port
-EMAIL=your_email
-EMAIL_PASSWORD=your_password
-URL=http://localhost:PORT
+  MONGODB_HOST=your_database_host
+  MONGODB_USER=your_database_user
+  MONGODB_PASSWORD=your_database_password
+  MONGODB_DATABASE=your_database
+  MONGODB_SESSION_SECRET=
+  NODE_SESSION_SECRET=
+  PORT=your_desired_port
+  EMAIL=your_email
+  EMAIL_PASSWORD=your_password
+  URL=http://localhost:PORT
 
 4. Run npm start
 
