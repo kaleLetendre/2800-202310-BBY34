@@ -37,6 +37,9 @@
 
 html {
   background-color: var(--blue2);
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -47,6 +50,11 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   /* filter: brightness(0.7); */
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  min-height: 100%;
 }
 
 h1, p, span {
@@ -414,4 +422,18 @@ header {
   background-position: center;
   height: 100vh;
 
+}
+.form-floating{
+  padding: 3px;
+}
+
+#greeting{
+  text-align: center;
+  font-weight: bold;
+}
+
+footer{
+  position: absolute;
+  bottom: 0;
+  width: 85%;
 }
