@@ -136,13 +136,15 @@ header {
 }
 
 .compass-inner {
-  position:absolute;
+  position: absolute;
   border-radius: 50%;
   width: 85%;
+  height: 85%;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   border: 2px solid var(--gold2);
+  object-fit: cover;
 }
 
 @keyframes rotate {
@@ -421,4 +423,14 @@ header {
 
 .form.signin {
   height: 400px;;
+}
+
+/* Profile */
+.form-control:disabled {
+  background-color: transparent;
+}
+
+/* Home Page */
+#home-welcome-text {
+  text-align: center;
 }
