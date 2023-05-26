@@ -30,6 +30,7 @@
 
 html {
   background-color: var(--blue2);
+
 }
 
 body {
@@ -198,4 +199,26 @@ hr {
 /* Header */
 .nav-link {
 
+}
+
+#footer-id{
+
+  margin-top: 20rem!important;
+
+}
+
+#greeting{
+  color: var(--blue2)!important;
+  font-weight: bold;
+}
+
+.form-floating{
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 5px;
+}
+#greeting-1{
+  color: var(--blue2)!important;
+  font-weight: bold;
+  text-align: center;
 }
