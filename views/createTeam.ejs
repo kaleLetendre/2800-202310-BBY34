@@ -1,25 +1,27 @@
 <%- include("templates/header") %>
-<main class="form-signin w-100 m-auto">
-  <div class="text-center">
-    <form action="/submitTeam" method="post" required>
+<div class="container">
+  <main class="form-signin w-100 m-auto">
+    <div class="text-center">
+      <form action="/submitTeam" method="post" required>
 
-      <h1 class="h3 mb-3 fw-normal">Create new team room</h1>
+        <h1 class="h3 mb-3 fw-normal">Create new team room</h1>
 
-      <div class="form-floating">
-        <input name="teamName" type="text" class="form-control" id="floatingInput" placeholder="Enter team name" required />
-        <label for="floatingInput">Enter team name</label>
-      </div>
-      <br>
-      <select class="form-select" aria-label="Select Team" name="userTeam">
-        <option selected>Team Color</option>
-        <option value="blue">Blue</option>
-        <option value="red">Red</option>
-      </select>
-      <br>
-      <button class="btn btn-primary btn-lg px-4 me-sm-3" type="submit">Create</button>
+        <div class="form-floating">
+          <input name="teamName" type="text" class="form-control" id="floatingInput" placeholder="Enter team name" required />
+          <label for="floatingInput">Enter team name</label>
+        </div>
+        <br>
+        <select class="form-select" aria-label="Select Team" name="userTeam">
+          <option selected>Team Color</option>
+          <option value="blue">Blue</option>
+          <option value="red">Red</option>
+        </select>
+        <br>
+        <button class="btn btn-primary btn-lg px-4 me-sm-3" type="submit">Create</button>
 
-    </form>
-  </div>
-  </div>
+      </form>
+    </div>
+</div>
 </main>
+</div>
 <%- include("templates/footer") %>
