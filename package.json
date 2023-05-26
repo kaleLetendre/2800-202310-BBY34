@@ -6,6 +6,8 @@
     "start": "nodemon index.js"
   },
   "dependencies": {
+    "@tensorflow/tfjs": "^4.6.0",
+    "@tensorflow/tfjs-node": "^4.6.0",
     "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
     "bootstrap": "^5.3.0-alpha3",

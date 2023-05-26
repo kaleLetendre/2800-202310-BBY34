@@ -1,5 +1,8 @@
+require('dotenv').config();
 require("./utils.js");
-require("dotenv").config();
+
+const tf = require("@tensorflow/tfjs-node");
+const ask = require("./AI.js");
 
 const axios = require('axios');
 const fetch = require('isomorphic-fetch');
@@ -635,7 +638,33 @@ app.get("/eggCount", (req, res) => {
   }
   res.redirect("/in");
 })
+app.get("/aiExample", (req, res) => {
+  res.render("aiExample");
+});
+app.post("/askAI", async (req, res) => {
+  // console.log(req.body);
+  // log the first value
+  // console.log(req.body["row1_input0"]);
+  // convet into 2x11 array
 
+  var input = [];
+  for (var i = 0; i < 2; i++) {
+    input.push([]);
+    for (var j = 0; j < 11; j++) {
+      input[i].push(0);
+      if (req.body["row" + (i + 1) + "_input" + j] != '') {
+        //cast to int
+        input[i][j] = parseInt(req.body["row" + (i + 1) + "_input" + j]);
+      }
+    }
+  }
+
+
+  // console.log(input);
+
+  var prediction = await ask(input);
+  // console.log(prediction);
+});
 app.get("*", (req, res) => {
   res.status(404);
   res.render("message", {
@@ -644,6 +673,9 @@ app.get("*", (req, res) => {
     route: '/'
   });
 });
+
+
+
 
 /**
  * Helper Functions

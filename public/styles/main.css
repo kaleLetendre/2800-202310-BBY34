@@ -1,3 +1,4 @@
+/* Global */
 :root {
   --gold1: #F0E6D2;
   --gold2: #C89B3C;
@@ -36,7 +37,10 @@
 }
 
 html {
-  background-color: var(--black);
+  background-color: var(--blue2);
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -60,7 +64,7 @@ header {
   background-color: var(--black);
 }
 
-/* home page */
+/* Home Page */
 .container-home {
   position: relative;
   background-image: url("/img/summoners_rift_platform.webp");
@@ -390,7 +394,6 @@ header {
   background-size: cover;
   background-position: center;
   height: 100vh;
-
 }
 
 .text-center {
@@ -399,7 +402,7 @@ header {
 }
 
 .form.signin {
-  height: 400px;;
+  height: 400px;
 }
 
 /* Profile */
