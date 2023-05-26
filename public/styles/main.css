@@ -136,13 +136,15 @@ header {
 }
 
 .compass-inner {
-  position:absolute;
+  position: absolute;
   border-radius: 50%;
   width: 85%;
+  height: 85%;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   border: 2px solid var(--gold2);
+  object-fit: cover;
 }
 
 @keyframes rotate {
@@ -178,7 +180,8 @@ header {
 
 .row {
   height: 20%;
-  min-height: 90px;
+  margin: 10px;
+  /* min-height: 90px; */
 }
 
 .team-info {
@@ -201,7 +204,7 @@ header {
 }
 
 .rounded-circle:hover {
-  border: 5px solid var(--gold1);
+  border: 3px solid var(--gold1);
 }
 
 .button {
@@ -257,6 +260,7 @@ header {
 
 .image-container {
   position: relative;
+  padding: 2px;
 }
 
 /* .border-2 {
@@ -289,7 +293,7 @@ header {
   border-bottom-left-radius: 0;
 }
 
-/* bans component */
+/* Bans Component */
 .container.bans {
   padding: 0;
   display: flex;
@@ -335,7 +339,7 @@ header {
 }
 
 @media (max-width: 500px) {
-  #bans, #recommend-container {
+  #recommend-container {
     display: block;
   }
   .bans-row {
@@ -358,12 +362,24 @@ header {
 }
 
 .champ-card.blue.active {
-  /* background: linear-gradient(to left, rgba(var(--blue3), 0.5), rgba(var(--blue), 0.3)); */
   background: linear-gradient(to right, rgba(0,90,130,0.5), rgba(0,90,130,0));
 }
 
 .champ-card.red.active {
   background: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,0.5));
+}
+
+/* Nav */
+@media (max-width: 500px) {
+  .nav {
+    --bs-nav-link-padding-x: 0.5rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .nav {
+    --bs-nav-link-padding-x: 0.25rem;
+  }
 }
 
 /* Back Nav Bar */
@@ -372,6 +388,7 @@ header {
   top: 0;
   left: 0;
 }
+
 .nav-back-btn {
   background: none;
   border: none;
@@ -406,4 +423,14 @@ header {
 
 .form.signin {
   height: 400px;;
+}
+
+/* Profile */
+.form-control:disabled {
+  background-color: transparent;
+}
+
+/* Home Page */
+#home-welcome-text {
+  text-align: center;
 }

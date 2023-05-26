@@ -306,7 +306,7 @@ app.post('/resettingPassword', async (req, res) => {
 app.get("/logout", async (req, res) => {
   console.log("removing session from db");
   req.session.destroy();
-  res.render("loggedOut");
+  res.render("message", { title: 'You\'re Logged Out', message: "You've successfully logged out. Click below to go back to home.", route: "/" })
 });
 
 //fix this
