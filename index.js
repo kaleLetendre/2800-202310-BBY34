@@ -383,7 +383,8 @@ app.post("/submitTeam", async (req, res) => {
     player3: null,
     player4: null,
     player5: null,
-    numPlayers: 1
+    numPlayers: 1,
+    userTeam: req.body.userTeam
   });
   res.redirect(`/teamView`)
 })
@@ -526,6 +527,8 @@ var bans = [
 ]
 
 var summonerNames = [dbRet[0].player1, dbRet[0].player2, dbRet[0].player3, dbRet[0].player4, dbRet[0].player5]
+
+var userTeam = dbRet[0].userTeam;
 /* end formatting*/
 
   res.render("teamView2", {
@@ -533,71 +536,12 @@ var summonerNames = [dbRet[0].player1, dbRet[0].player2, dbRet[0].player3, dbRet
     teamName: dbRet[0].teamName,
     username: req.session.username,
     url: process.env.URL,
-    // champ1: champ1,
-    // img1: await champImage(champ1),
-
-    // champ2: champ2,
-    // img2: await champImage(champ2),
-
-    // champ3: champ3,
-    // img3: await champImage(champ3),
-
-    // champ4: champ4,
-    // img4: await champImage(champ4),
-
-    // champ5: champ5,
-    // img5: await champImage(champ5),
-
-    // enemy1: enemy1,
-    // enimg1: await champImage(enemy1),
-    
-    // enemy2: enemy2,
-    // enimg2: await champImage(enemy2),
-
-    // enemy3: enemy3,
-    // enimg3: await champImage(enemy3),
-
-    // enemy4: enemy4,
-    // enimg4: await champImage(enemy4),
-
-    // enemy5: enemy5,
-    // enimg5: await champImage(enemy5),
-
-    // ban1: ban1,
-    // banimg1: await champImage(ban1),
-
-    // ban2: ban2,
-    // banimg2: await champImage(ban2),
-
-    // ban3: ban3,
-    // banimg3: await champImage(ban3),
-
-    // ban4: ban4,
-    // banimg4: await champImage(ban4),
-
-    // ban5: ban5,
-    // banimg5: await champImage(ban5),
-
-    // ban6: ban6,
-    // banimg6: await champImage(ban6),
-    
-    // ban7: ban7,
-    // banimg7: await champImage(ban8),
-
-    // ban8: ban8,
-    // banimg8: await champImage(ban8),
-
-    // ban9: ban9,
-    // banimg9: await champImage(ban9),
-
-    // ban10: ban10,
-    // banimg10: await champImage(ban10),
     summonerNames: summonerNames,
     roles: roles,
     teamChamps: teamChamps,
     enemyChamps: enemyChamps,
     bans: bans,
-    userTeam: 'red'
+    userTeam: userTeam
   });
 
   }
