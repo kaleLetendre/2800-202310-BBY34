@@ -122,6 +122,7 @@ app.post("/submitUser", async (req, res) => {
     pick3: "blank"
   });
 
+  req.session.username = username;
   req.session.pick1 = "blank";
   req.session.pick2 = "blank";
   req.session.pick3 = "blank";
