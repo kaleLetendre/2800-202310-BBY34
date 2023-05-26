@@ -36,7 +36,10 @@
 }
 
 html {
-  background-color: var(--black);
+  background-color: var(--blue2);
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -47,6 +50,11 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   /* filter: brightness(0.7); */
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  min-height: 100%;
 }
 
 h1, p, span {
@@ -415,22 +423,17 @@ header {
   height: 100vh;
 
 }
-
-.text-center {
-  background-color: rgba(1,10,19, 0.9);
-  padding: 10px;
+.form-floating{
+  padding: 3px;
 }
 
-.form.signin {
-  height: 400px;;
-}
-
-/* Profile */
-.form-control:disabled {
-  background-color: transparent;
-}
-
-/* Home Page */
-#home-welcome-text {
+#greeting{
   text-align: center;
+  font-weight: bold;
+}
+
+footer{
+  position: absolute;
+  bottom: 0;
+  width: 85%;
 }

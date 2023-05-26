@@ -1,5 +1,6 @@
+require('dotenv').config();
 require("./utils.js");
-require("dotenv").config();
+
 
 const axios = require('axios');
 const fetch = require('isomorphic-fetch');
