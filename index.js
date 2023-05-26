@@ -122,6 +122,9 @@ app.post("/submitUser", async (req, res) => {
     pick3: "blank"
   });
 
+  req.session.pick1 = "blank";
+  req.session.pick2 = "blank";
+  req.session.pick3 = "blank";
   req.session.email = email;
   req.session.authenticated = true;
   req.session.guest = false;
@@ -130,6 +133,12 @@ app.post("/submitUser", async (req, res) => {
     res.redirect("/in");
   }
   else { 
+    const dbRet = await teamsCollection
+      .find({ code: req.session.teamCode })
+      .project({})
+      .toArray();
+      var spot = "player" + (dbRet[0].numPlayers + 1);
+      
     await teamsCollection.updateOne(
       { code: req.session.teamCode },
       {
@@ -177,9 +186,17 @@ app.post("/loggingin", async (req, res) => {
     req.session.pick1 = result[0].pick1;
     req.session.pick2 = result[0].pick2;
     req.session.pick3 = result[0].pick3;
+    
     if (req.session.teamCode == null)
       res.redirect("/in");
-    else {await teamsCollection.updateOne(
+    else {
+      const dbRet = await teamsCollection
+      .find({ code: req.session.teamCode })
+      .project({})
+      .toArray();
+      var spot = "player" + (dbRet[0].numPlayers + 1);
+      
+      await teamsCollection.updateOne(
       { code: req.session.teamCode },
       {
         $set: {

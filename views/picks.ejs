@@ -1,13 +1,19 @@
 <%- include('templates/header') %>
 <h3 class="text-center">How to use</h3>
 <p class="text-center">Click the spot you would like to input to and then type the name of the champion below! Check for spelling and capitalize the first letter if you have issues.</p>
+<br>
 <div class="m-0 p-0">
-  <% for (i = 0; i < 3; i++) { %>
-    <div class="col">
-      <%- include('templates/picksCard', {champ: champ[i], imgURL: img[i], position: i}) %>
-      <br>
+  <div class="container">
+    <div class="row">
+      <% for (i = 0; i < 3; i++) { %>
+        <div class="col-12 col-md-4">
+          <%- include('templates/picksCard', {champ: champ[i], imgURL: img[i], position: i}) %>
+          <br>
+        </div>
+      <% } %>
     </div>
-  <% } %>
+  </div>
+  
 </div>
 <%- include('mod', {target: ''}) %>
 <%- include("templates/footer") %>
