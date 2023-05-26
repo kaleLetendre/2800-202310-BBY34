@@ -2,7 +2,7 @@ const tf = require('@tensorflow/tfjs');
 const fs = require('fs');
 
 async function loadModel() {
-  const model = await tf.loadLayersModel('file://modles/model.json');
+  const model = await tf.loadLayersModel('file://models/model.json');
   console.log('Model loaded successfully!');
   return model;
 }
