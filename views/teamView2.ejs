@@ -1,28 +1,40 @@
-<%- include('templates/header') %>
+<%- include('templates/head') %>
 <main class="room">
   <div class="container room">
     <div class="overlay"></div>
+    <%- include('templates/backNav') %>
     <%- include('templates/teamInfo', {link: url + 'linkJoin?friend=' + username + '&name=' + teamName + '&teamCode=' + teamCode}) %>
     <%- include('templates/bans', {
       bans: bans
     }) %>
     <div class="room-cards">
       <% for (i = 0; i < 5; i++) { %>
-      <div class="row m-0 p-0">
+      <div class="row p-0">
         <%- include('templates/champCard', {
           role: roles[i], 
-          summonerName: (userTeam == 'blue') ?summonerNames[i] : '', imgURL: (userTeam == 'blue') ? teamChamps[i][1] : enemyChamps[i][1], champ: (userTeam == 'blue') ? teamChamps[i][0] : enemyChamps[i][0], position: i, 
-          team: 'blue' 
+          summonerName: (userTeam == 'blue') ? summonerNames[i] : '', 
+          imgURL: (userTeam == 'blue') ? teamChamps[i][1] : enemyChamps[i][1], 
+          champ: (userTeam == 'blue') ? teamChamps[i][0] : enemyChamps[i][0], 
+          position: i, 
+          team: 'blue',
+          userTeam: userTeam 
           }) %>
         <%- include('templates/champCard', {
           role: roles[i], 
-          summonerName: (userTeam == 'red') ?summonerNames[i] : '', imgURL: (userTeam == 'red') ? teamChamps[i][1] : enemyChamps[i][1], champ: (userTeam == 'red') ? teamChamps[i][0] : enemyChamps[i][0], 
+          summonerName: (userTeam == 'red') ? summonerNames[i] : '', 
+          imgURL: (userTeam == 'red') ? teamChamps[i][1] : enemyChamps[i][1], 
+          champ: (userTeam == 'red') ? teamChamps[i][0] : enemyChamps[i][0], 
           position: i, 
-          team: 'red' }) %>
+          team: 'red',
+          userTeam: userTeam 
+          }) %>
       </div>
       <% } %>
     </div>
-    <%- include('templates/teams') %>
+    <p>Recommendation:</p>
+    <%- include('templates/teams', {
+      arr: teamChamps
+    }) %>
     <%- include('mod', {target: ''}) %>
   </div>
 </main>
@@ -41,5 +53,6 @@
     const form = document.getElementById('champion-input-form');
     form.action = "/update?tar=" + event.currentTarget.getAttribute('data-id');
     console.log(form.action);
+    console.log(userTeam);
   }
 </script>
