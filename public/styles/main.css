@@ -355,12 +355,20 @@ ul.list-group.red li.list-group-item.active {
   justify-content: end;
 }
 
+.champ-card.blue {
+  background: linear-gradient(to right, rgba(0,90,130,0.2), rgba(0,90,130,0));
+}
+
+.champ-card.red {
+  background: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,0.2));
+}
+
 .champ-card.blue.active {
-  background: linear-gradient(to right, rgba(0,90,130,0.3), rgba(0,90,130,0));
+  background: linear-gradient(to right, rgba(0,90,130,0.4), rgba(0,90,130,0));
 }
 
 .champ-card.red.active {
-  background: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,0.3));
+  background: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,0.4));
 }
 
 /* Nav */

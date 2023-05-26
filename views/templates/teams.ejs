@@ -14,7 +14,7 @@
   <ul class="list-group list-group-horizontal bans-row">
     <% for (i = 0; i < 5; i++) { %>
     <li class="list-group-item">
-      <img class="" src="<%= arr[i] ? bans[i] : '/svg/empty.svg' %>" alt="">
+      <img class="" src="<%= arr[i] ? arr[i] : '/svg/empty.svg' %>" alt="">
     </li>
     <% } %>
   </ul>
