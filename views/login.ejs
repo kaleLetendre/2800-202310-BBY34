@@ -1,26 +1,40 @@
-<%- include("templates/head") %>
-<div class="login-container">
-  <%- include("templates/backNav") %>
-  <main class="form-signin w-100 m-auto container">
-    <div class="text-center container">
-      <form action="/loggingin" method="post" required>
+<%- include("templates/header") %>
+<main class="form-signin w-100 m-auto">
+  <div class="text-center">
+  <form action="/loggingin" method="post" required>
+    
+    <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
-        <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
-
-        <div class="form-floating">
-          <input name="username" type="text" class="form-control" id="floatingInput" placeholder="Username" required />
-          <label for="floatingInput">Username</label>
-        </div>
-        <div class="form-floating">
-          <input name="password" type="password" class="form-control" id="floatingPassword" placeholder="Password" required />
-          <label for="floatingPassword">Password</label>
-        </div>
-        <br>
-        <button class="btn btn-primary btn-lg px-4 me-sm-3" type="submit">Sign in</button>
-        <button onclick="window.location.href='/forgotPass'" type="button" class="btn btn-primary btn-lg px-4 me-sm-3">Forgot Password?</button>
-      </form>
+    <div class="form-floating">
+      <input
+        name="username"
+        type="text"
+        class="form-control"
+        id="floatingInput"
+        placeholder="Username"
+        required
+      />
+      <label for="floatingInput">Username</label>
     </div>
+    <div class="form-floating">
+      <input
+        name="password"
+        type="password"
+        class="form-control"
+        id="floatingPassword"
+        placeholder="Password"
+        required
+      />
+      <label for="floatingPassword">Password</label>
+    </div>
+    <br>
+    <button class="btn btn-primary btn-lg px-4 me-sm-3" type="submit">Sign in</button>
+    
+  </form>
+  <br> <br>
+  <button onclick="window.location.href='/forgotPass'" type="button" class="btn btn-secondary btn-lg px-4 me-sm-3">Forgot Password?</button>
+</div>
 </div>
 </main>
-</div>
-<%- include("templates/footer") %>
+  <%- include("templates/footer") %>
+  
