@@ -483,9 +483,15 @@ app.get("/teamView", async (req, res) => {
     var userTeam = dbRet[0].userTeam;
 
     let prediction = await ask(formatQuestion(dbRet));
+    let predictions = [];
+    try{
+      predictions = prediction.map(string => {
+        string ? champImage(string) : null});
+    } catch (err) {
+      console.log(err);
+    }
 
-    let predictions = prediction.map(string => {
-      string ? champImage(string) : null});
+    console.log(predictions);
 
     res.render("teamView2", {
       teamCode: req.session.teamCode,
