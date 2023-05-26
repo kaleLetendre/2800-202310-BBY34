@@ -129,7 +129,7 @@ app.post("/submitUser", async (req, res) => {
   req.session.pick1 = "blank";
   req.session.pick2 = "blank";
   req.session.pick3 = "blank";
-  // console.log("Inserted user");
+
   if (req.session.teamCode == null) {
     res.redirect("/in");
   }
@@ -186,6 +186,9 @@ app.get("/incorrect", (req, res) => {
   res.render("incorrect");
 });
 
+/**
+ * Password Recovery
+ */
 app.get("/forgotPass", (req, res) => {
   res.render("forgotPass");
 })
@@ -289,27 +292,14 @@ app.post('/resettingPassword', async (req, res) => {
   }
 })
 
-// app.get("/loggedin", async (req, res) => {
-//   if (!req.session.authenticated || req.session.guest) {
-//     res.redirect("/login");
-//   }
-
-//   console.log("Inserted session");
-
-//   if (req.session.user_type == "admin"){
-//     res.render("adminloggedin");
-//   } else {
-//     res.render("loggedIn");
-//   }
-// });
-
+/* Logged Out Page */
 app.get("/logout", async (req, res) => {
   console.log("removing session from db");
   req.session.destroy();
   res.render("message", { title: 'You\'re Logged Out', message: "You've successfully logged out. Click below to go back to home.", route: "/" })
 });
 
-//fix this
+/* Home Page */
 app.get("/in", async (req, res) => {
   if (!req.session.authenticated || req.session.guest) {
     console.log("You're not supposed to be here yet")
@@ -330,13 +320,14 @@ app.get("/nope", (req, res) => {
   res.render("nope");
 })
 
+/* Champions picks Page */
 app.get("/picks", async (req, res) => {
   var picks = [
     req.session.pick1,
     req.session.pick2,
     req.session.pick3
   ];
-  
+
   var img = [];
   
   img.push(champImage(req.session.pick1));
@@ -345,6 +336,9 @@ app.get("/picks", async (req, res) => {
   res.render("picks", {champ: picks, img: img});
 })
 
+/**
+ * Team Paths
+ */
 app.get("/findTeam", (req, res) => {
   res.render("findTeam");
 })
@@ -445,8 +439,6 @@ app.post("/joinTeam", async (req, res) => {
   }
 });
 
-
-
 app.get("/linkJoin", (req, res) => {
   req.session.username = null;
   req.session.teamCode = req.query.teamCode;
@@ -464,7 +456,6 @@ app.get("/guestJoin", (req, res) => {
 })
 
 app.get("/teamView", async (req, res) => {
-  // temp
   const roles = ['Top', 'Jungle', 'Mid', 'Bot', 'Support'];
 
   const champs = champData();
@@ -479,59 +470,58 @@ app.get("/teamView", async (req, res) => {
   dbRet = await teamsCollection
   .find({ code: req.session.teamCode})
   .project({}).toArray();
- 
-var champ1 = dbRet[0].champ1;
-var champ2 = dbRet[0].champ2;
-var champ3 = dbRet[0].champ3;
-var champ4 = dbRet[0].champ4;
-var champ5 = dbRet[0].champ5;
-var enemy1 = dbRet[0].enemy1;
-var enemy2 = dbRet[0].enemy2;
-var enemy3 = dbRet[0].enemy3;
-var enemy4 = dbRet[0].enemy4;
-var enemy5 = dbRet[0].enemy5;
-var ban1 = dbRet[0].ban1;
-var ban2 = dbRet[0].ban2;
-var ban3 = dbRet[0].ban3;
-var ban4 = dbRet[0].ban4;
-var ban5 = dbRet[0].ban5;
-var ban6 = dbRet[0].ban6;
-var ban7 = dbRet[0].ban7;
-var ban8 = dbRet[0].ban8;
-var ban9 = dbRet[0].ban9;
-var ban10 = dbRet[0].ban10;
+  
+  var champ1 = dbRet[0].champ1;
+  var champ2 = dbRet[0].champ2;
+  var champ3 = dbRet[0].champ3;
+  var champ4 = dbRet[0].champ4;
+  var champ5 = dbRet[0].champ5;
+  var enemy1 = dbRet[0].enemy1;
+  var enemy2 = dbRet[0].enemy2;
+  var enemy3 = dbRet[0].enemy3;
+  var enemy4 = dbRet[0].enemy4;
+  var enemy5 = dbRet[0].enemy5;
+  var ban1 = dbRet[0].ban1;
+  var ban2 = dbRet[0].ban2;
+  var ban3 = dbRet[0].ban3;
+  var ban4 = dbRet[0].ban4;
+  var ban5 = dbRet[0].ban5;
+  var ban6 = dbRet[0].ban6;
+  var ban7 = dbRet[0].ban7;
+  var ban8 = dbRet[0].ban8;
+  var ban9 = dbRet[0].ban9;
+  var ban10 = dbRet[0].ban10;
 
-var teamChamps = [
-  [champ1, champImage(champ1)],
-  [champ2, champImage(champ2)],
-  [champ3, champImage(champ3)],
-  [champ4, champImage(champ4)],
-  [champ5, champImage(champ5)],
-];
-var enemyChamps = [
-  [enemy1, champImage(enemy1)],
-  [enemy2, champImage(enemy2)],
-  [enemy3, champImage(enemy3)],
-  [enemy4, champImage(enemy4)],
-  [enemy5, champImage(enemy5)],
-]
-var bans = [
-  [ban1, champImage(ban1)],
-  [ban2, champImage(ban2)],
-  [ban3, champImage(ban3)],
-  [ban4, champImage(ban4)],
-  [ban5, champImage(ban5)],
-  [ban6, champImage(ban6)],
-  [ban7, champImage(ban7)],
-  [ban8, champImage(ban8)],
-  [ban9, champImage(ban9)],
-  [ban10, champImage(ban10)]
-]
+  var teamChamps = [
+    [champ1, champImage(champ1)],
+    [champ2, champImage(champ2)],
+    [champ3, champImage(champ3)],
+    [champ4, champImage(champ4)],
+    [champ5, champImage(champ5)],
+  ];
+  var enemyChamps = [
+    [enemy1, champImage(enemy1)],
+    [enemy2, champImage(enemy2)],
+    [enemy3, champImage(enemy3)],
+    [enemy4, champImage(enemy4)],
+    [enemy5, champImage(enemy5)],
+  ]
+  var bans = [
+    [ban1, champImage(ban1)],
+    [ban2, champImage(ban2)],
+    [ban3, champImage(ban3)],
+    [ban4, champImage(ban4)],
+    [ban5, champImage(ban5)],
+    [ban6, champImage(ban6)],
+    [ban7, champImage(ban7)],
+    [ban8, champImage(ban8)],
+    [ban9, champImage(ban9)],
+    [ban10, champImage(ban10)]
+  ]
 
-var summonerNames = [dbRet[0].player1, dbRet[0].player2, dbRet[0].player3, dbRet[0].player4, dbRet[0].player5]
+  var summonerNames = [dbRet[0].player1, dbRet[0].player2, dbRet[0].player3, dbRet[0].player4, dbRet[0].player5]
 
-var userTeam = dbRet[0].userTeam;
-/* end formatting*/
+  var userTeam = dbRet[0].userTeam;
 
   res.render("teamView2", {
     teamCode: req.session.teamCode,
@@ -589,9 +579,7 @@ app.get("/mod", (req, res) => {
   res.render("mod", { target: req.query.tar });
 })
 
-/**
- * Project routes
- */
+/* Profile Page */
 app.get('/profile', async (req, res) => {
   // session check 
   if (!req.session.authenticated || req.session.guest) {
@@ -613,6 +601,9 @@ app.get('/profile', async (req, res) => {
   }
 });
 
+/**
+ * Password Recovery Routes
+ */
 app.get("/email-not-found", (req, res) => {
   res.render("message", { title: 'Email Not Found', message: "Sorry the inputted email can\'t be found. Please try again.", route: "/forgotPass" })
 });
@@ -696,18 +687,9 @@ async function champData() {
   }
 }
 
-
-// async function champImage(champion){
-//   console.log("getting " + champion);
-//   const response = await axios.get('http://ddragon.leagueoflegends.com/cdn/12.6.1/data/en_US/champion.json');
-//   return `http://ddragon.leagueoflegends.com/cdn/13.9.1/img/champion/${champion}.png`
-// }
 function champImage(champion) {
-  // const response = await axios.get('http://ddragon.leagueoflegends.com/cdn/12.6.1/data/en_US/champion.json');
   return `http://ddragon.leagueoflegends.com/cdn/13.9.1/img/champion/${champion}.png`
 }
-
-
 
 const emailRecoveryText = (token) => {
   return `Hello,
@@ -725,8 +707,6 @@ Thank you for choosing our service.
 Sincerely,
 
 SyneRift Team`}
-
-
 
 app.listen(port, () => {
   console.log("Node application listening on port " + port);
