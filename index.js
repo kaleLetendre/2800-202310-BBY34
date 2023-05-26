@@ -481,9 +481,9 @@ app.get("/teamView", async (req, res) => {
     var bans = generateBans(dbRet);
     var summonerNames = [dbRet[0].player1, dbRet[0].player2, dbRet[0].player3, dbRet[0].player4, dbRet[0].player5];
     var userTeam = dbRet[0].userTeam;
-    console.log(formatQuestion(dbRet));
-    let prediction = await ask(formatQuestion(dbRet));
-    console.log(prediction);
+    // console.log(formatQuestion(dbRet));
+    // let prediction = await ask(formatQuestion(dbRet));
+    // console.log(prediction);
 
     res.render("teamView2", {
       teamCode: req.session.teamCode,
