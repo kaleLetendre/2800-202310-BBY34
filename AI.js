@@ -79,10 +79,31 @@ async function ask(question) {
     const fileData = fs.readFileSync('champions.json', 'utf-8');
     const champsArr = JSON.parse(fileData);
 
+    // const mappedStrings = result.map(id => {
+    //   const champ = champsArr.find(champ => champ[2].toString() === id.toString());
+    //   console.log(`ID: ${id}, Champ: ${JSON.stringify(champ)}`);
+    //   return champ ? champ[1] : null;
+    // });
+
     const mappedStrings = result.map(id => {
+      try{
       const champ = champsArr.find(champ => champ[2].toString() === id.toString());
       console.log(`ID: ${id}, Champ: ${JSON.stringify(champ)}`);
       return champ ? champ[1] : null;
+      } catch (error) {
+        switch (id) {
+          case 100:
+            return 'Blue Team';
+          case 200:
+            return 'Red Team';
+          case -1:
+            return 'Skipped';
+          case 0:
+            return 'Not Selected';
+          default:
+            return 'Unknown';
+        }
+      }
     });
     
     mappedStrings.shift();
