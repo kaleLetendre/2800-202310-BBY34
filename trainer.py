@@ -165,7 +165,7 @@ print("resulting number of rows validation_out: " + str(len(validation_data_y)))
 # ____________________CREATE MODEL____________________
 #__________Input__________
 input_layer = tf.keras.layers.Input(shape=(2, 11))
-embedding_layer = tf.keras.layers.Embedding(167, 11, input_length=2 * 11)(input_layer)
+embedding_layer = tf.keras.layers.Embedding(167, 11, input_length=(2,11))(input_layer)
 flatten_layer = tf.keras.layers.Flatten()(embedding_layer)
 
 #__________Hidden__________
