@@ -336,8 +336,10 @@ app.get("/picks", async (req, res) => {
     req.session.pick2,
     req.session.pick3
   ];
+  
   var img = [];
-  img.push(champImage(req.session.pick1,));
+  
+  img.push(champImage(req.session.pick1));
   img.push(champImage(req.session.pick2));
   img.push(champImage(req.session.pick3));
   res.render("picks", {champ: picks, img: img});

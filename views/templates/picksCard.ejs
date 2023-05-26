@@ -1,5 +1,5 @@
 <div>
   <div class="image-container container d-flex justify-content-center align-items-center" onclick="handleChampClick()" data-id="pick<%= position + 1 %>">
-    <img class="rounded-circle" src="<%= champ !== 'blank' ? imgURL : '/svg/plus.svg' %>" alt="">
+    <img class="rounded-circle" src="<%= champ !== 'blank' && champ ? imgURL : '/svg/plus.svg' %>" alt="">
   </div>
 </div>
