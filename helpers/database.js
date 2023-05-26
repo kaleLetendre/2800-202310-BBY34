@@ -109,6 +109,34 @@ function formatQuestion(dbRet) {
       result[1].push(convertBlankToZero(bans[i]));
     }
   }
+  // load champions.json
+  const champions = require('../champions.json');
+  // console.log(champions);
+
+  // use champions.json to get champion ids
+  for (let i = 0; i < result[0].length; i++) {
+  //   check if type is string
+    if (typeof result[0][i] == 'string') {
+      for (let j = 0; j < champions.length; j++) {
+        if (result[0][i] == champions[j][0]) {
+          result[0][i] = champions[j][2];
+          console.log(result[0][i]);
+        }
+      }
+    }
+  }
+  for (let i = 0; i < result[1].length; i++) {
+    //   check if type is string
+    if (typeof result[1][i] == 'string') {
+      for (let j = 0; j < champions.length; j++) {
+        if (result[1][i] == champions[j][0]) {
+          result[1][i] = champions[j][2];
+        }
+      }
+    }
+  }
+
+
 
   return result;
 }

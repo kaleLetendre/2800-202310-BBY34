@@ -482,13 +482,18 @@ app.get("/teamView", async (req, res) => {
     var summonerNames = [dbRet[0].player1, dbRet[0].player2, dbRet[0].player3, dbRet[0].player4, dbRet[0].player5];
     var userTeam = dbRet[0].userTeam;
 
+    console.log(formatQuestion(dbRet));
     let prediction = await ask(formatQuestion(dbRet));
     let predictions = [];
-    try{
-      predictions = prediction.map(string => {
-        string ? champImage(string) : null});
-    } catch (err) {
-      console.log(err);
+    // for each loop
+    console.log(prediction);
+    for (let i = 0; i < prediction.length; i++) {
+      try {
+        predictions.push(champImage(prediction[i]));
+      } catch (err) {
+        console.log(err);
+        predictions.push("https://i.imgur.com/0Q0Zn2X.png");
+      }
     }
 
     console.log(predictions);
