@@ -638,9 +638,11 @@ app.get("/eggCount", (req, res) => {
   }
   res.redirect("/in");
 })
+
 app.get("/aiExample", (req, res) => {
   res.render("aiExample");
 });
+
 app.post("/askAI", async (req, res) => {
   // console.log(req.body);
   // log the first value
@@ -659,12 +661,10 @@ app.post("/askAI", async (req, res) => {
     }
   }
 
-
-  // console.log(input);
-
   var prediction = await ask(input);
   // console.log(prediction);
 });
+
 app.get("*", (req, res) => {
   res.status(404);
   res.render("message", {
@@ -673,9 +673,6 @@ app.get("*", (req, res) => {
     route: '/'
   });
 });
-
-
-
 
 /**
  * Helper Functions
