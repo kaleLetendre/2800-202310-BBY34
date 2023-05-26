@@ -1,0 +1,58 @@
+<%- include('templates/head') %>
+<main class="room">
+  <div class="container room">
+    <div class="overlay"></div>
+    <%- include('templates/backNav') %>
+    <%- include('templates/teamInfo', {link: url + 'linkJoin?friend=' + username + '&name=' + teamName + '&teamCode=' + teamCode}) %>
+    <%- include('templates/bans', {
+      bans: bans
+    }) %>
+    <div class="room-cards">
+      <% for (i = 0; i < 5; i++) { %>
+      <div class="row p-0">
+        <%- include('templates/champCard', {
+          role: roles[i], 
+          summonerName: (userTeam == 'blue') ? summonerNames[i] : '', 
+          imgURL: (userTeam == 'blue') ? teamChamps[i][1] : enemyChamps[i][1], 
+          champ: (userTeam == 'blue') ? teamChamps[i][0] : enemyChamps[i][0], 
+          position: i, 
+          team: 'blue',
+          userTeam: userTeam 
+          }) %>
+        <%- include('templates/champCard', {
+          role: roles[i], 
+          summonerName: (userTeam == 'red') ? summonerNames[i] : '', 
+          imgURL: (userTeam == 'red') ? teamChamps[i][1] : enemyChamps[i][1], 
+          champ: (userTeam == 'red') ? teamChamps[i][0] : enemyChamps[i][0], 
+          position: i, 
+          team: 'red',
+          userTeam: userTeam 
+          }) %>
+      </div>
+      <% } %>
+    </div>
+    <p>Recommendation:</p>
+    <%- include('templates/teams', {
+      arr: teamChamps
+    }) %>
+    <%- include('mod', {target: ''}) %>
+  </div>
+</main>
+<!-- <%- include('templates/footer') %> -->
+<script>
+  const handleChampClick = () => {
+    // toggles active class for champ-cards
+    const champCards = document.getElementsByClassName('champ-card');
+    for (let i = 0; i < champCards.length; i++) {
+      champCards[i].classList.remove('active');
+    }
+    const clickedCard = event.currentTarget;
+    clickedCard.classList.add('active');
+
+    // sets action to data-id
+    const form = document.getElementById('champion-input-form');
+    form.action = "/update?tar=" + event.currentTarget.getAttribute('data-id');
+    console.log(form.action);
+    console.log(userTeam);
+  }
+</script>

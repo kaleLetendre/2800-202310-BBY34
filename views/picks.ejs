@@ -1,0 +1,20 @@
+<%- include('templates/header') %>
+<div class="container">
+  <h3>Chosen Champions</h3>
+  <div class="row m-0 p-0 mb-2">
+    <% for (i = 0; i < 3; i++) { %>
+    <div class="col">
+      <%- include('templates/picksCard', {champ: champ[i], imgURL: img[i], position: i}) %>
+    </div>
+    <% } %>
+  </div>
+  <%- include('mod', {target: ''}) %>
+</div>
+<%- include("templates/footer") %>
+<script>
+  const handleChampClick = () => {
+    // set action to data-id
+    const form = document.getElementById('champion-input-form');
+    form.action = "/updatePicks?tar=" + event.target.parentNode.getAttribute('data-id');
+  }
+</script>

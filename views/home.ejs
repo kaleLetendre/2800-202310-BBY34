@@ -1,11 +1,20 @@
-<%- include("templates/header") %>
-<div class="px-4 pt-5 my-5 text-center border-bottom">
-  <h1 class="display-4 fw-bold text-body-emphasis" id="greeting">Welcome</h1>
-  <div class="col-lg-6 mx-auto">
-    <p class="lead mb-4"></p>
-    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
-      <button onclick="window.location.href='/login?teamCode=0'" type="button" class="btn btn-primary btn-lg px-4 me-sm-3">Log in</button>
-      <button onclick="window.location.href='/createUser?teamCode=0'" type="button" class="btn btn-primary btn-lg px-4">Sign up</button>
+<%- include("templates/head") %>
+<div class="container-home">
+  <div class="overlay" id="overlay-home"></div>
+  <div class="px-4 pt-5 center">
+    <div class="center-box">
+      <h1 class="display-4 fw-bold text-body-emphasis" id="greeting">Welcome to SyneRift</h1>
+      <div class="box-1">
+        <div class="box">
+          <object data="/svg/compass-ring.svg" type="image/svg+xml" class="compass-border">
+          </object>
+          <img class="compass-inner" src="/poro.jpg">
+        </div>
+      </div>
+      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
+        <button onclick="window.location.href='/login'" type="button" class="btn btn-primary btn-lg px-4 me-sm-3">Log in</button>
+        <button onclick="window.location.href='/createUser'" type="button" class="btn btn-primary btn-lg px-4">Sign up</button>
+      </div>
     </div>
   </div>
 </div>
