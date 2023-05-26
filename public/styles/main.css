@@ -19,6 +19,7 @@
   --bs-body-color: var(--gold1);
   --bs-body-color-rgb: 240, 230, 210;
   --bs-border-color: var(--gold1);
+  --bs-list-group-active-bg: transparent;
   /* bs nav */
   --bs-link-color: var(--gold1);
   --bs-link-hover-color: var(--gold2);
@@ -292,6 +293,26 @@ header {
   padding: 0;
 }
 
+.list-group-item.active {
+  border: solid 3px var(--gold2) !important;
+}
+
+ul.list-group.blue li.list-group-item {
+  background-color: rgba(0,90,130,0.4) !important;
+}
+
+ul.list-group.red li.list-group-item {
+  background-color: rgba(255,0,0,0.4) !important;
+}
+
+ul.list-group.blue li.list-group-item.active {
+  background-color: rgba(0,90,130,0.8) !important;
+}
+
+ul.list-group.red li.list-group-item.active {
+  background-color: rgba(255,0,0,0.8) !important;
+}
+
 .list-group-item img {
   max-width: 100%;
   max-height: 100%;
@@ -342,12 +363,20 @@ header {
   justify-content: end;
 }
 
+.champ-card.blue {
+  background: linear-gradient(to right, rgba(0,90,130,0.2), rgba(0,90,130,0));
+}
+
+.champ-card.red {
+  background: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,0.2));
+}
+
 .champ-card.blue.active {
-  background: linear-gradient(to right, rgba(0,90,130,0.3), rgba(0,90,130,0));
+  background: linear-gradient(to right, rgba(0,90,130,0.4), rgba(0,90,130,0));
 }
 
 .champ-card.red.active {
-  background: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,0.3));
+  background: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,0.4));
 }
 
 /* Nav */

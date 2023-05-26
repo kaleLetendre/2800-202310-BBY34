@@ -1,28 +1,35 @@
+// External dependencies
 require('dotenv').config();
-require("./utils.js");
-
-const tf = require("@tensorflow/tfjs-node");
-const ask = require("./AI.js");
-
 const axios = require('axios');
-const fetch = require('isomorphic-fetch');
-
 const nodemailer = require('nodemailer');
 const express = require("express");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const bcrypt = require("bcrypt");
-const saltRounds = 12;
-
-const port = process.env.PORT || 3000;
-
-const app = express();
-
 const Joi = require("joi");
+const fetch = require('isomorphic-fetch');
+
+// Internal dependencies
 const { undefined } = require("webidl-conversions");
 const { render } = require("ejs");
+require("./utils.js");
+const { generateTeamChamps, generateEnemyChamps, generateBans, champImage, formatQuestion } = require('./helpers/database.js');
 
+// AI
+const tf = require("@tensorflow/tfjs-node");
+const ask = require("./AI.js");
+
+// Constants
+const saltRounds = 12;
 const expireTime = 24 * 60 * 60 * 1000; //expires after 1 day  (hours * minutes * seconds * millis)
+
+// Express App Configuration
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.set('view engine', 'ejs');
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static(__dirname + "/public"));
 
 /* secret information section */
 const mongodb_host = process.env.MONGODB_HOST;
@@ -34,19 +41,14 @@ const mongodb_session_secret = process.env.MONGODB_SESSION_SECRET;
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 /* END secret section */
 
+// Database Connection
 var { database } = include("databaseConnection");
-
 const userCollection = database.db(mongodb_database).collection("users");
 const teamsCollection = database.db(mongodb_database).collection("teams");
 const passResetCollection = database.db(mongodb_database).collection('passwordResetRequests');
 passResetCollection.createIndex({ createdAt: 1 }, { expireAfterSeconds: 86400 })
 
-
-app.set('view engine', 'ejs');
-
-app.use(express.urlencoded({ extended: false }));
-// console.log(`mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`);
-
+// Session Configuration
 var mongoStore = MongoStore.create({
   mongoUrl: `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/sessions`,
   crypto: {
@@ -63,6 +65,7 @@ app.use(
   })
 );
 
+// Other Variables
 var logo = "logo.jpg";
 
 /* Home */
@@ -462,83 +465,52 @@ app.get("/teamView", async (req, res) => {
   const roles = ['Top', 'Jungle', 'Mid', 'Bot', 'Support'];
 
   const champs = champData();
-  if(!req.session.authenticated || req.session.teamCode == null){
+  if(!req.session.authenticated || req.session.teamCode == null) {
     res.redirect("/nope");
   }
-  else if(req.session.pick1 == "blank" || req.session.pick2 == "blank" || req.session.pick3 == "blank"){
+  else if(req.session.pick1 == "blank" || req.session.pick2 == "blank" || req.session.pick3 == "blank") {
     res.redirect("/picks")
   }
-  else{
-    console.log(req.session.username);
-  dbRet = await teamsCollection
-  .find({ code: req.session.teamCode})
-  .project({}).toArray();
-  
-  var champ1 = dbRet[0].champ1;
-  var champ2 = dbRet[0].champ2;
-  var champ3 = dbRet[0].champ3;
-  var champ4 = dbRet[0].champ4;
-  var champ5 = dbRet[0].champ5;
-  var enemy1 = dbRet[0].enemy1;
-  var enemy2 = dbRet[0].enemy2;
-  var enemy3 = dbRet[0].enemy3;
-  var enemy4 = dbRet[0].enemy4;
-  var enemy5 = dbRet[0].enemy5;
-  var ban1 = dbRet[0].ban1;
-  var ban2 = dbRet[0].ban2;
-  var ban3 = dbRet[0].ban3;
-  var ban4 = dbRet[0].ban4;
-  var ban5 = dbRet[0].ban5;
-  var ban6 = dbRet[0].ban6;
-  var ban7 = dbRet[0].ban7;
-  var ban8 = dbRet[0].ban8;
-  var ban9 = dbRet[0].ban9;
-  var ban10 = dbRet[0].ban10;
+  else {
+    dbRet = await teamsCollection
+    .find({ code: req.session.teamCode})
+    .project().toArray();
 
-  var teamChamps = [
-    [champ1, champImage(champ1)],
-    [champ2, champImage(champ2)],
-    [champ3, champImage(champ3)],
-    [champ4, champImage(champ4)],
-    [champ5, champImage(champ5)],
-  ];
-  var enemyChamps = [
-    [enemy1, champImage(enemy1)],
-    [enemy2, champImage(enemy2)],
-    [enemy3, champImage(enemy3)],
-    [enemy4, champImage(enemy4)],
-    [enemy5, champImage(enemy5)],
-  ]
-  var bans = [
-    [ban1, champImage(ban1)],
-    [ban2, champImage(ban2)],
-    [ban3, champImage(ban3)],
-    [ban4, champImage(ban4)],
-    [ban5, champImage(ban5)],
-    [ban6, champImage(ban6)],
-    [ban7, champImage(ban7)],
-    [ban8, champImage(ban8)],
-    [ban9, champImage(ban9)],
-    [ban10, champImage(ban10)]
-  ]
+    var teamChamps = generateTeamChamps(dbRet);
+    var enemyChamps = generateEnemyChamps(dbRet);
+    var bans = generateBans(dbRet);
+    var summonerNames = [dbRet[0].player1, dbRet[0].player2, dbRet[0].player3, dbRet[0].player4, dbRet[0].player5];
+    var userTeam = dbRet[0].userTeam;
 
-  var summonerNames = [dbRet[0].player1, dbRet[0].player2, dbRet[0].player3, dbRet[0].player4, dbRet[0].player5]
+    console.log(formatQuestion(dbRet));
+    let prediction = await ask(formatQuestion(dbRet));
+    let predictions = [];
+    // for each loop
+    console.log(prediction);
+    for (let i = 0; i < prediction.length; i++) {
+      try {
+        predictions.push(champImage(prediction[i]));
+      } catch (err) {
+        console.log(err);
+        predictions.push("https://i.imgur.com/0Q0Zn2X.png");
+      }
+    }
 
-  var userTeam = dbRet[0].userTeam;
+    console.log(predictions);
 
-  res.render("teamView2", {
-    teamCode: req.session.teamCode,
-    teamName: dbRet[0].teamName,
-    username: req.session.username,
-    url: process.env.URL,
-    summonerNames: summonerNames,
-    roles: roles,
-    teamChamps: teamChamps,
-    enemyChamps: enemyChamps,
-    bans: bans,
-    userTeam: userTeam
-  });
-
+    res.render("teamView2", {
+      teamCode: req.session.teamCode,
+      teamName: dbRet[0].teamName,
+      username: req.session.username,
+      url: process.env.URL,
+      summonerNames: summonerNames,
+      roles: roles,
+      teamChamps: teamChamps,
+      enemyChamps: enemyChamps,
+      bans: bans,
+      userTeam: userTeam,
+      prediction: predictions
+    });
   }
 })
 
@@ -568,12 +540,12 @@ app.post("/updatePicks", async (req, res) => {
   }
   console.log(input);
   req.session[req.query.tar] = input;
-  if(!req.session.guest){
+  if(!req.session.guest) {
   await userCollection.updateOne(
     { email: req.session.email },
     { $set: { [target]: input } }
   );}
-  if(req.session.teamCode != null){
+  if(req.session.teamCode != null) {
     res.redirect("/teamView")
   } else {res.redirect("/picks");}
 })
@@ -622,8 +594,6 @@ app.get("/password-reset-success", (req, res) => {
 app.get("/password-reset-failure", (req, res) => {
   res.render("message", { title: 'Password Reset Unsucessfully', message: "Password has not been reset. Please contact us for more details.", route: "/" });
 });
-
-app.use(express.static(__dirname + "/public"));
 
 //easter egg
 var counter = 0;
@@ -714,10 +684,6 @@ async function champData() {
   } catch (error) {
     console.error('Error fetching champions:', error);
   }
-}
-
-function champImage(champion) {
-  return `http://ddragon.leagueoflegends.com/cdn/13.9.1/img/champion/${champion}.png`
 }
 
 const emailRecoveryText = (token) => {
