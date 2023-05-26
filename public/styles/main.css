@@ -1,3 +1,4 @@
+/* Global */
 :root {
   --gold1: #F0E6D2;
   --gold2: #C89B3C;
@@ -44,17 +45,10 @@ html {
 
 body {
   font-family: 'Spiegel', Arial, sans-serif;
-  /* background-color: var(--blue2); */
-  /* background-image: url("/img/summoners_rift_platform.webp"); */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  /* filter: brightness(0.7); */
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  position: relative;
-  min-height: 100%;
+  min-height: 100vh;
 }
 
 h1, p, span {
@@ -70,7 +64,7 @@ header {
   background-color: var(--black);
 }
 
-/* home page */
+/* Home Page */
 .container-home {
   position: relative;
   background-image: url("/img/summoners_rift_platform.webp");
@@ -298,7 +292,6 @@ header {
   padding: 0;
 }
 
-
 .list-group-item img {
   max-width: 100%;
   max-height: 100%;
@@ -401,19 +394,42 @@ header {
   background-size: cover;
   background-position: center;
   height: 100vh;
-
-}
-.form-floating{
-  padding: 3px;
 }
 
-#greeting{
+.text-center {
+  background-color: rgba(1,10,19, 0.9);
+  padding: 10px;
+}
+
+.form.signin {
+  height: 400px;
+}
+
+/* Profile */
+.form-control:disabled {
+  background-color: transparent;
+}
+
+/* Home Page */
+#home-welcome-text {
   text-align: center;
-  font-weight: bold;
 }
 
-footer{
-  position: absolute;
+/* Footer */
+footer {
+  position: fixed;
   bottom: 0;
-  width: 85%;
+  width: inherit;
+  max-width: inherit;
+}
+
+.footer-logo {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+footer p {
+  font-size: x-small;
+  padding: 5px;
 }
