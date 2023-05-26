@@ -297,6 +297,14 @@ header {
   border: solid 3px var(--gold2) !important;
 }
 
+ul.list-group.blue li.list-group-item {
+  background-color: rgba(0,90,130,0.4) !important;
+}
+
+ul.list-group.red li.list-group-item {
+  background-color: rgba(255,0,0,0.4) !important;
+}
+
 ul.list-group.blue li.list-group-item.active {
   background-color: rgba(0,90,130,0.8) !important;
 }
