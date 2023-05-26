@@ -1,6 +1,6 @@
 <div class="container bans collapse show" id="bans">
   <!-- first team bans -->
-  <ul class="list-group list-group-horizontal bans-row">
+  <ul class="list-group list-group-horizontal bans-row blue">
     <% for (i = 0; i < 5; i++) { %>
     <li class="list-group-item" onclick="handleBanClick(this)" data-id="ban<%= i + 1%>">
       <img class="" src="<%= bans[i][0] !== 'blank' ? bans[i][1] : '/svg/plus.svg' %>" alt="">
@@ -11,7 +11,7 @@
     <% } %>
   </ul>
   <!-- second team bans -->
-  <ul class="list-group list-group-horizontal bans-row">
+  <ul class="list-group list-group-horizontal bans-row red">
     <% for (i = 5; i < 10; i++) { %>
     <li class="list-group-item" onclick="handleBanClick(this)" data-id="ban<%= i + 1%>">
       <img class="" src="<%= bans[i][0] !== 'blank' ? bans[i][1] : '/svg/plus.svg' %>" alt="">
@@ -25,6 +25,19 @@
 
 <script>
   const handleBanClick = (element) => {
+    // Remove active class from all list-group-items
+    const banItems = document.getElementsByClassName('list-group-item');
+    for (let i = 0; i < banItems.length; i++) {
+      banItems[i].classList.remove('active');
+    }
+    const champCards = document.getElementsByClassName('champ-card');
+    for (let i = 0; i < champCards.length; i++) {
+      champCards[i].classList.remove('active');
+    }
+
+    // Add active class to the clicked list-group-item
+    element.classList.add('active');
+
     // set action to data-id
     const form = document.getElementById('champion-input-form');
     form.action = "/update?tar=" + element.getAttribute('data-id');

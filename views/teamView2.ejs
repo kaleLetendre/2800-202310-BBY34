@@ -43,9 +43,13 @@
   const handleChampClick = () => {
     // toggles active class for champ-cards
     const champCards = document.getElementsByClassName('champ-card');
-
     for (let i = 0; i < champCards.length; i++) {
       champCards[i].classList.remove('active');
+    }
+
+    const banItems = document.getElementsByClassName('list-group-item');
+    for (let i = 0; i < banItems.length; i++) {
+      banItems[i].classList.remove('active');
     }
 
     const clickedCard = event.currentTarget;
