@@ -9,7 +9,7 @@
     }) %>
     <div class="room-cards">
       <% for (i = 0; i < 5; i++) { %>
-      <div class="row m-0 p-0">
+      <div class="row p-0">
         <%- include('templates/champCard', {
           role: roles[i], 
           summonerName: (userTeam == 'blue') ? summonerNames[i] : '', 
@@ -31,6 +31,7 @@
       </div>
       <% } %>
     </div>
+    <p>Recommendation:</p>
     <%- include('templates/teams', {
       arr: teamChamps
     }) %>
